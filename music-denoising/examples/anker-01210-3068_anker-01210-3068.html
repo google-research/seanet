@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Compare Original and Denoised Audios</title>
+    <style>button</style>
+  </head>
+
+  <body>
+    <h1>Original vs. Denoised Audio Comparison</h1>
+    <h2>*** NOTE: Loading may be slow. Refresh the page if the audios are out of sync. ***</h2>
+    <audio id="audio1" src="anker-01210-3068_anker-01210-3068.wav"></audio>
+    <audio id="audio2" src="anker-01210-3068_anker-01210-3068_denoised.wav"></audio>
+    <div>Original file name: anker-01210-3068_anker-01210-3068.wav</div>
+    <div>Playback status: <span id="playStatus">stopped</span></div>
+    <div>Listening to: <span id="currTrack">original</span></div>
+    <button id="play">Play</button>
+    <button id="pause" disabled>Pause</button>
+    <button id="stop" disabled>Stop</button>
+    <button id="toggle" disabled>Toggle between original and denoised</button>
+
+    <script>
+      var playButton = document.getElementById("play");
+      var pauseButton = document.getElementById("pause");
+      var stopButton = document.getElementById("stop");
+      var toggleButton = document.getElementById("toggle");
+      var track1 = document.getElementById("audio1");
+      var track2 = document.getElementById("audio2");
+      var playStatus = document.getElementById("playStatus");
+      var currTrack = document.getElementById("currTrack");
+      var initialized = false;
+
+      function maybeInit() {
+          if (initialized == false) {
+              track2.muted = true;
+              initialized = true;
+          }
+      }
+
+      function updatePlayStatus(track, status, t) {
+          if (track.paused == true){
+              status.innerHTML = "paused";
+          } else {
+              status.innerHTML = "playing";
+          }
+          clearInterval(t);
+      }
+
+      playButton.onclick = function() {
+          maybeInit();
+          this.disabled = true;
+          pauseButton.disabled = false;
+          stopButton.disabled = false;
+          toggleButton.disabled = false;
+          track1.play();
+          track2.play();
+          playStatus.innerHTML = "playing";
+      }
+
+      pauseButton.onclick = function(){
+          this.disabled = true;
+          playButton.disabled = false;
+          track1.pause();
+          track2.pause();
+          playStatus.innerHTML = "paused";
+      }
+
+      stopButton.onclick = function() {
+          this.disabled = true;
+          playButton.disabled = false;
+          pauseButton.disabled = true;
+          track1.pause();
+          track1.currentTime = 0
+          track2.pause();
+          track2.currentTime = 0
+          playStatus.innerHTML = "stopped";
+      }
+
+      toggleButton.onclick = function() {
+          if (track1.muted == true) {
+              track1.muted = false;
+              track2.muted = true;
+              currTrack.innerHTML = "original";
+          } else {
+              track2.muted = false;
+              track1.muted = true;
+              currTrack.innerHTML = "denoised";
+          }
+      }
+    </script>
+  </body>
+</html>
