@@ -1,5 +1,6 @@
 function createAudioHTML(path) {
-  return '<audio controls controlslist="nodownload"> <source src=' + path +
+  return '<audio controls controlslist="nodownload" class="px-1"> <source src=' +
+      path +
       ' type="audio/wav">Your browser does not support the audio element.</audio>';
 }
 const numPerPage = 4;
