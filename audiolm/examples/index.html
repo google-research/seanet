@@ -27,7 +27,11 @@
         <h1>AudioLM</h1>
         <h3>A Language Modeling Approach to Audio Generation</h3>
         <p class="lead fw-bold">
-          | <a href="#" class="btn border-white bg-white fw-bold">paper</a> |
+          |<a
+            href="https://arxiv.org/abs/2209.03143"
+            class="btn border-white bg-white fw-bold"
+            >paper</a
+          >|
         </p>
         <p class="fst-italic mb-0">
           Zalán Borsos, Raphaël Marinier, Damien Vincent, Eugene Kharitonov,
@@ -42,19 +46,19 @@
         audio to a sequence of discrete tokens and casts audio generation as a
         language modeling task in this representation space. We show how
         existing audio tokenizers provide different trade-offs between
-        reconstruction quality and long-term structure, and we propose a
-        hybrid tokenization scheme to achieve both objectives. Namely, we
-        leverage the discretized activations of a masked language model
-        pre-trained on audio to capture long-term structure and the discrete
-        codes produced by a neural audio codec to achieve high-quality
-        synthesis. By training on large corpora of raw audio waveforms, AudioLM
-        learns to generate natural and coherent continuations given short
-        prompts. When trained on speech, and without any transcript or
-        annotation, AudioLM generates syntactically and semantically plausible
-        speech continuations while also maintaining speaker identity and prosody
-        for unseen speakers. Furthermore, we demonstrate how our approach
-        extends beyond speech by generating coherent piano music continuations,
-        despite being trained without any symbolic representation of music.
+        reconstruction quality and long-term structure, and we propose a hybrid
+        tokenization scheme to achieve both objectives. Namely, we leverage the
+        discretized activations of a masked language model pre-trained on audio
+        to capture long-term structure and the discrete codes produced by a
+        neural audio codec to achieve high-quality synthesis. By training on
+        large corpora of raw audio waveforms, AudioLM learns to generate natural
+        and coherent continuations given short prompts. When trained on speech,
+        and without any transcript or annotation, AudioLM generates
+        syntactically and semantically plausible speech continuations while also
+        maintaining speaker identity and prosody for unseen speakers.
+        Furthermore, we demonstrate how our approach extends beyond speech by
+        generating coherent piano music continuations, despite being trained
+        without any symbolic representation of music.
       </p>
     </div>
 
