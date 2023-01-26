@@ -1,0 +1,8 @@
+jazz song <br>
+pop song <br>
+rock song <br>
+death metal song <br>
+rap song <br>
+string quartet with violins <br>
+epic movie soundtrack with drums <br>
+scottish folk song with traditional instruments

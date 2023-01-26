@@ -1,0 +1,4 @@
+time to meditate <br>
+time to wake up <br>
+time to run <br>
+time to give 100%
