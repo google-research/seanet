@@ -1,4 +1,4 @@
-time to meditate <br>
-time to wake up <br>
-time to run <br>
-time to give 100%
+time to meditate <span class="timestamp-label">(0:00-0:15)</span> <br>
+time to wake up <span class="timestamp-label">(0:15-0:30)</span> <br>
+time to run <span class="timestamp-label">(0:30-0:45)</span> <br>
+time to give 100% <span class="timestamp-label">(0:45-0:60)</span>

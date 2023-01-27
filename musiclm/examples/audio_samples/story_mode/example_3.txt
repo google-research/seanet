@@ -1,8 +1,8 @@
-jazz song <br>
-pop song <br>
-rock song <br>
-death metal song <br>
-rap song <br>
-string quartet with violins <br>
-epic movie soundtrack with drums <br>
-scottish folk song with traditional instruments
+jazz song <span class="timestamp-label">(0:00-0:15)</span><br>
+pop song <span class="timestamp-label">(0:15-0:30)</span><br>
+rock song<span class="timestamp-label">(0:30-0:45) </span><br>
+death metal song <span class="timestamp-label">(0:45-1:00)</span><br>
+rap song <span class="timestamp-label">(1:00-1:15)</span><br>
+string quartet with violins <span class="timestamp-label">(1:15-1:30)</span><br>
+epic movie soundtrack with drums <span class="timestamp-label">(1:30-1:45)</span><br>
+scottish folk song with traditional instruments <span class="timestamp-label">(1:45-2:00)</span>

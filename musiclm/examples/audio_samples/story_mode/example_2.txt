@@ -1,4 +1,4 @@
-electronic song played in a videogame <br>
-meditation song played next to a river <br>
-fire <br>
-fireworks
+electronic song played in a videogame <span class="timestamp-label">(0:00-0:15)</span><br>
+meditation song played next to a river <span class="timestamp-label">(0:15-0:30)</span><br>
+fire <span class="timestamp-label">(0:30-0:45)</span><br>
+fireworks <span class="timestamp-label">(0:45-0:60)</span>
