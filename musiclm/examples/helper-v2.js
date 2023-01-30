@@ -317,10 +317,10 @@ places = [
 melodies_dirs = [
   'bella-ciao_humming',
   'bella-ciao_jingle-bells_whistling',
-  'camptown-races_humming',
+  'mozart-symphony25_whistling',
+  'ode-to-joy_humming',
   'fingerstyle-guitar',
   'jingle-bells_marimba',
-  'turkey-in-the-straw_whislting',
   'twinkle-twinkle-little-star_piano',
   'when-the-saints-go-marching-in_strings',
 ];
