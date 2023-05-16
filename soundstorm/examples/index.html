@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SoundStorm</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="helper.js" defer></script>
+    <style>
+      td {
+        vertical-align: middle;
+        text-align: center;
+      }
+      audio {
+        width: 20vw;
+        min-width: 130px;
+        max-width: 280px;
+      }
+      h1, h2, h3, h4, h5, h6, body, b, strong, th {
+        color: #595959;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+      <div class="text-center">
+        <h1>SoundStorm:</h1><h3>Efficient Parallel Audio Generation</h3>
+        <p class="lead">
+          [<a
+            href=""
+            >paper</a
+          >]
+        </p>
+        <p class="fst-italic mb-0">
+          Zalán Borsos, Matt Sharifi, Damien Vincent, Eugene Kharitonov, Neil Zeghidour, Marco Tagliasacchi
+        </p>
+        <p><b>Google Research</b></p>
+      </div>
+      <p>
+        <b>Abstract.</b>  
+        We present SoundStorm, a model for efficient, non-autoregressive audio generation. 
+        SoundStorm receives as input the semantic tokens of AudioLM (Borsos et al., 2022), and relies on
+        bidirectional attention and confidence-based parallel decoding to generate the tokens of a
+        neural audio codec. Compared to the autoregressive generation approach of AudioLM, our model
+        produces audio of the same quality and with higher consistency in voice and acoustic
+        conditions, while being two orders of magnitude faster. SoundStorm generates 30 seconds of audio in 0.5 seconds on
+        a TPU-v4. We demonstrate the ability of our model to scale audio generation to longer sequences 
+        by synthesizing high-quality, natural dialogue segments, given transcripts annotated with 
+        speaker turns and a short prompt with the speakers' voices.
+      </p>
+      <div class="container">
+        <div class="row">
+          <div class="embed-responsive embed-responsive-16by9 text-center">
+            <video class="embed-responsive-item" style="max-width: 80%; min-width: 280px;" controls>
+              <source src="data/SoundStorm_promo.mp4" type="video/mp4">
+              Your browser does not support HTML video.
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container shadow p-5 mb-5 bg-white rounded">
+      <h3>Dialogue Synthesis<a id="dialogue"/></h3>
+      <p class="mb-0">
+        SoundStorm, coupled with the text-to-semantic modeling stage of SPEAR-TTS
+        (Kharitonov et al., 2023), can synthesize high quality, natural dialogues, allowing one to
+        control the spoken content (via transcripts), speaker voices (via short voice prompts) and
+        speaker turns (via transcript annotations). When synthesizing dialogue segments of 30 seconds, 
+        we measured a runtime of 2 seconds on a single TPU-v4. The following text and speakers have
+        not been seen during training.
+      </p>
+
+      <div class="container pt-3 table-responsive">
+        <table
+          class="table table-hover"
+          id="dialogue-table"
+        >
+          <thead>
+            <tr>
+              <th style="text-align: center;min-width: 200px;">Text</th>
+              <th style="text-align: center;">Voice Prompt</th>
+              <th style="text-align: center">Synthesized Dialog</th>
+            </tr>
+          </thead>
+          <tbody>
+             <tr> <td></td> <td></td> <td></td></tr>
+             <tr> <td></td> <td></td> <td></td></tr>
+             <tr> <td></td> <td></td> <td></td></tr>
+             <tr> <td></td> <td></td> <td></td></tr>
+             <tr> <td></td> <td></td> <td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="container shadow p-5 mb-5 bg-white rounded">
+      <h3>Unprompted and Prompted Generation<a id="librispeech"/></h3>
+      <p class="mb-0">
+      We demonstrate the capabilities of SoundStorm to generate audio conditioned on the semantic
+        tokens of AudioLM with and without 3-second voice prompts.
+        SoundStorm samples different speakers in the unprompted case, and maintains the speaker's
+        voice with high consistency in the prompted case, while generating audio two orders of
+        magnitude faster than AudioLM's acoustic generator.
+        The original samples are from LibriSpeech test-clean.
+      </p>
+
+      <div class="container pt-3 table-responsive">
+        <table
+          class="table table-hover"
+          id="librispeech-table"
+        >
+          <thead>
+            <tr>
+              <th style="text-align: center">Original</th>
+              <th style="text-align: center">Unprompted</th>
+              <th style="text-align: center">Prompted</th>
+            </tr>
+          </thead>
+          <tbody>
+             <tr> <td></td> <td></td> <td></td></tr>
+             <tr> <td></td> <td></td> <td></td></tr>
+             <tr> <td></td> <td></td> <td></td></tr>
+             <tr> <td></td> <td></td> <td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="container shadow p-5 mb-5 bg-white rounded">
+      <h3>Baselines<a id="baselines"/></h3>
+      <p class="mb-0">
+      When generating audio in the prompted case, SoundStorm generations have higher acoustic consistency
+        and preserve the speaker's voice from the prompt better than AudioLM. Compared to RVQ level-wise
+        greedy decoding with the same model, SoundStorm produces audio with higher quality.
+        
+      </p>
+
+      <div class="container pt-3 table-responsive">
+        <table
+          class="table table-hover"
+          id="baselines-table"
+        >
+          <thead>
+            <tr>
+              <th style="text-align: center">Original</th>
+              <th style="text-align: center">AudioLM</th>
+              <th style="text-align: center">Greedy</th>
+              <th style="text-align: center">SoundStorm</th>
+            </tr>
+          </thead>
+          <tbody>
+             <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+             <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+             <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+             <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+   
+    <div class="container shadow p-5 mb-5 bg-white rounded">
+      <h3>Broader impact<a id="impact"/></h3>
+      <p class="mb-0">
+        SoundStorm is a model for high-quality, efficient generation of neural audio codec-derived
+        representations of audio. In this work, we use it as a replacement for the acoustic
+        generation pipeline of AudioLM and SPEAR-TTS. We acknowledge that the audio samples produced
+        by the model may be influenced by the biases present in the training data, for instance in
+        terms of represented accents and voice characteristics. In our generated samples, we
+        demonstrate that we can reliably control speaker characteristics via prompting. However, a
+        more thorough analysis of any training data and its limitations would be an area of future
+        work in line with our responsible AI principles.
+        In turn, the ability to mimic a voice can have numerous malicious applications, including
+        bypassing biometric identification and for the purpose of impersonation. Thus, it is crucial
+        to put in place safeguards against the potential misuse: to this end, we have verified that, after
+        such a replacement, the generated audio remains detectable by a dedicated classifier 
+        (98.5% using the same classifier as Borsos et al. (2022)). Hence, as a component of a
+        larger system, we believe that SoundStorm would be unlikely to introduce additional risks to those discussed
+        previously by Borsos et al. (2022) and Kharitonov et al. (2023). At the same time, we hope
+        that relaxing the memory and computational requirements of AudioLM would make research in 
+        the domain of audio generation more accessible to a wider community. In the future, we plan
+        to explore other approaches for detecting synthesized speech, e.g., audio watermarking, so
+        that any potential product usage of this technology strictly follows our responsible AI
+        principles. 
+      </p>
+    </div>
+
+
+
+  </body>
+</html>
