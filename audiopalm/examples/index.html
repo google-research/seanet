@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AudioPaLM</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="helper.js" defer></script>
+    <style>
+      td {
+        vertical-align: middle;
+      }
+      audio {
+        width: 20vw;
+        min-width: 100px;
+        max-width: 250px;
+      }
+      .container-xxxl {
+        max-width: 1500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+      <div class="text-center">
+        <h1>AudioPaLM</h1><h3>A Large Language Model That Can Speak and Listen</h3>
+        <p class="lead fw-bold">
+          |<a
+            href="https://arxiv.org/abs/TODO"
+            class="btn border-white bg-white fw-bold"
+            >paper</a
+          >|
+        </p>
+        <p class="fst-italic mb-0">
+          Paul Rubenstein*, Chulayuth Asawaroengchai*, Duc Dung Nguyen*, <br>
+          Ankur Bapna, Zalán Borsos, Félix de Chaumont Quitry, Peter Chen, Dalia El Badawy, Wei Han, Eugene Kharitonov,
+          Hannah Muckenhirn, Dirk Padfield, James Qin, Danny Rozenberg, Tara Sainath, Johan Schalkwyk, Matt Sharifi,
+          Michelle Tadmor Ramanovich, Marco Tagliasacchi, Alex Tudor, Mihajlo Velimirović, Damien Vincent,
+          Jiahui Yu, Yongqiang Wang, Vicky Zayats, Neil Zeghidour, Yu Zhang, Zhishuai Zhang, Lukas Zilka, Christian Frank
+        </p>
+        <p><b>Google</b></p>
+      </div>
+      <p>
+        <b>Abstract.</b>
+        We introduce AudioPaLM, a large language model for speech understanding and generation.
+        In recent years, modelling language through text has allowed scaling both models and data, improving linguistic capabilities while discarding paralinguistic information such as speaker identity or intonation.
+        In parallel, textless speech generation systems, which directly model language as spoken utterances have allowed integrating this paralinguistic information, yet their limited size and training data only provide them with limited linguistic knowledge.
+        In this work, we merge these two families of models and introduce AudioPaLM, a large language model for speech understanding and generation.
+        AudioPaLM fuses a text-based and a speech-based language model, namely PaLM-2 [Anil et al., 2023] and AudioLM [Borsos et al., 2022], into a multimodal architecture that can process and generate text and speech with applications such as speech recognition or speech-to-speech translation.
+        Moreover, we demonstrate that initializing AudioPaLM with the weights of a text-only large language model improves speech processing, successfully leveraging the larger quantity of text training data used in pretraining to assist with the speech tasks.
+        The resulting model significantly outperforms existing systems for speech translation tasks and has the ability to perform zero-shot speech-to-text translation for many languages for which input/target language combinations were not seen in training.
+        AudioPaLM also demonstrates features of audio language models, such as transferring a voice across languages based on a short spoken prompt.
+      </p>
+    </div>
+
+<div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+    <h2 id="model-overview" style="text-align: center;">AudioPaLM Overview</h2>
+    <body>
+    <p style="text-align: center;">
+        <img src="fig1.svg" height="200" width="800" class="img-fluid">
+    </p>
+    </body>
+        <p>
+          The AudioPaLM model, illustrated on speech-to-speech translation and automatic speech recognition.
+          We take a pretrained text-only model (dashed lines) and expand its embeddings matrix to model a new set of audio tokens.
+          The model architecture is otherwise unchanged; a mixed sequence of text and audio tokens is fed as input and the model decodes text or audio tokens.
+          Audio tokens are converted back to raw audio with latter AudioLM stages.
+        </p>
+      <div class="container">
+        <div class="row">
+          <div class="embed-responsive embed-responsive-16by9 text-center">
+            <video class="embed-responsive-item" style="max-width: 80%; min-width: 280px;" controls>
+              <source src="data/AudioPaLM_promo.mp4" type="video/mp4">
+              Your browser does not support HTML video.
+            </video>
+          </div>
+        </div>
+      </div>
+</div>
+
+<div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+    <h2 id="model-overview" style="text-align: left;">Table of Contents</h2>
+    <body>
+    <p style="text-align: left;">
+    <ul style="list-style: outside none none !important;">
+       <li><a href="#s2s-section" class="btn border-white bg-white fw-bold">Speech-to-speech translation</a></li>
+       <li><a href="#s2tt-section" class="btn border-white bg-white fw-bold">Speech-to-text translation</a></li>
+       <li><a href="#asr-section" class="btn border-white bg-white fw-bold">ASR</a></li>
+    </ul>
+    </p>
+    </body>
+</div>
+
+
+    <div class="container-xxl container-xxxl shadow p-5 mb-5 bg-white rounded">
+      <h3>Speech-to-speech translation<a id="s2s-section"/></h3>
+      <p class="mb-0">
+In this section, we demonstrate AudioPaLM's ability to preserve the original speaker voice even in the translated audio.
+There are 3 groups of languages from CVSS-T dataset, as in Table 3 of Jia et al., 2022.
+For each language, we selected 5 utterances uniformly at random from the utterances which were sent for subjective ratings. The selection of the utterances for subjective evaluation is described in the AudioPaLM paper.
+      </p>
+      <p style="margin-top: 2em">
+The columns are as follows:
+        <ol>
+          <li>Original audio in the CVSS-T example</li>
+          <li>The audio in the target language, as stored in the CVSS-T example</li>
+          <li>The English accented audio in the target language, as output by AudioPaLM for the given original audio</li>
+          <li>The source-language accented audio in the target language, as output by AudioPaLM for the given original audio</li>
+          <li>The audio in the target language, as output by Translatotron 2 (Jia et al., 2022) for the given original audio, without voice preservation</li>
+        </ol>
+      </p>
+
+      <div id="s2s-div-high" class="pt-3 table-responsive">
+        <h4>High-resource languages</h4>
+        <table id="s2s-high-table" class="table pt-2">
+          <thead>
+            <tr>
+              <th style="text-align: center">Original</th>
+              <th style="text-align: center">CVSS-T (ground truth target)</th>
+              <th style="text-align: center">AudioPaLM translation with English accent</th>
+              <th style="text-align: center">AudioPaLM translation with the source-language accent</th>
+              <th style="text-align: center">Translatotron 2 (prior work)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a id="s2s-lang-fr" class="page-link" href="#">FR</a></li>
+          <li class="page-item active"><a id="s2s-lang-de" class="page-link" href="#">DE</a></li>
+          <li class="page-item"><a id="s2s-lang-ca" class="page-link" href="#">CA</a></li>
+          <li class="page-item"><a id="s2s-lang-es" class="page-link" href="#">ES</a></li>
+        </ul>
+      </div>
+      <div id="s2s-div-med" class="pt-3 table-responsive">
+        <h4>Medium-resource languages</h4>
+        <table id="s2s-med-table" class="table pt-2">
+          <thead>
+            <tr>
+              <th style="text-align: center">Original</th>
+              <th style="text-align: center">CVSS-T (ground truth target)</th>
+              <th style="text-align: center">AudioPaLM translation with English accent</th>
+              <th style="text-align: center">AudioPaLM translation with the source-language accent</th>
+              <th style="text-align: center">Translatotron 2 (prior work)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a id="s2s-lang-fa" class="page-link" href="#">FA</a></li>
+          <li class="page-item active"><a id="s2s-lang-it" class="page-link" href="#">IT</a></li>
+          <li class="page-item"><a id="s2s-lang-ru" class="page-link" href="#">RU</a></li>
+          <li class="page-item"><a id="s2s-lang-zh" class="page-link" href="#">ZH</a></li>
+          <li class="page-item"><a id="s2s-lang-pt" class="page-link" href="#">PT</a></li>
+        </ul>
+      </div>
+      <div id="s2s-div-low" class="pt-3 table-responsive">
+        <h4>Low-resource languages</h4>
+        <table id="s2s-low-table" class="table pt-2">
+          <thead>
+            <tr>
+              <th style="text-align: center">Original</th>
+              <th style="text-align: center">CVSS-T (ground truth target)</th>
+              <th style="text-align: center">AudioPaLM translation with English accent</th>
+              <th style="text-align: center">AudioPaLM translation with the source-language accent</th>
+              <th style="text-align: center">Translatotron 2 (prior work)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+          <li class="page-item active"><a id="s2s-lang-nl" class="page-link" href="#">NL</a></li>
+          <li class="page-item"><a id="s2s-lang-tr" class="page-link" href="#">TR</a></li>
+          <li class="page-item"><a id="s2s-lang-et" class="page-link" href="#">ET</a></li>
+          <li class="page-item"><a id="s2s-lang-mn" class="page-link" href="#">MN</a></li>
+          <li class="page-item"><a id="s2s-lang-ar" class="page-link" href="#">AR</a></li>
+          <li class="page-item"><a id="s2s-lang-lv" class="page-link" href="#">LV</a></li>
+          <li class="page-item"><a id="s2s-lang-sl" class="page-link" href="#">SL</a></li>
+          <li class="page-item"><a id="s2s-lang-sv" class="page-link" href="#">SV</a></li>
+          <li class="page-item"><a id="s2s-lang-cy" class="page-link" href="#">CY</a></li>
+          <li class="page-item"><a id="s2s-lang-ta" class="page-link" href="#">TA</a></li>
+          <li class="page-item"><a id="s2s-lang-ja" class="page-link" href="#">JA</a></li>
+          <li class="page-item"><a id="s2s-lang-id" class="page-link" href="#">ID</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container shadow p-5 mb-5 bg-white rounded">
+      <h3>Speech-to-text translation<a id="s2tt-section"/></h3>
+      <p class="mb-0">
+      Here we show English translation of the original audio, as translated by AudioPaLM.
+      Note that usually there are multiple correct ways to translate a sentence, so a correct translation does not need to exactly match the targets from the CVSS-T dataset.
+      The output of AudioPaLM currently does not have punctuation, because the training data did not have it. However, in our future work we plan to also add the punctuation.
+      </p>
+      <div id="s2tt-div-high" class="container pt-3 table-responsive">
+        <h4>High-resource languages</h4>
+        <table id="s2tt-high-table" class="table pt-2">
+          <thead>
+            <tr>
+              <th style="text-align: center">Source language audio</th>
+              <th style="text-align: center">CVSS-T target language transcript</th>
+              <th style="text-align: center">Audio PaLM translation</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a id="s2tt-lang-fr" class="page-link" href="#">FR</a></li>
+          <li class="page-item active"><a id="s2tt-lang-de" class="page-link" href="#">DE</a></li>
+          <li class="page-item"><a id="s2tt-lang-ca" class="page-link" href="#">CA</a></li>
+          <li class="page-item"><a id="s2tt-lang-es" class="page-link" href="#">ES</a></li>
+        </ul>
+      </div>
+
+      <div id="s2tt-div-med" class="container pt-3 table-responsive">
+        <h4>Medium-resource languages</h4>
+        <table id="s2tt-med-table" class="table pt-2">
+          <thead>
+            <tr>
+              <th style="text-align: center">Source language audio</th>
+              <th style="text-align: center">CVSS-T target language transcript</th>
+              <th style="text-align: center">Audio PaLM translation</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a id="s2tt-lang-fa" class="page-link" href="#">FA</a></li>
+          <li class="page-item active"><a id="s2tt-lang-it" class="page-link" href="#">IT</a></li>
+          <li class="page-item"><a id="s2tt-lang-ru" class="page-link" href="#">RU</a></li>
+          <li class="page-item"><a id="s2tt-lang-zh" class="page-link" href="#">ZH</a></li>
+          <li class="page-item"><a id="s2tt-lang-pt" class="page-link" href="#">PT</a></li>
+        </ul>
+      </div>
+
+      <div id="s2tt-div-low" class="container pt-3 table-responsive">
+        <h4>Low-resource languages</h4>
+        <table id="s2tt-low-table" class="table pt-2">
+          <thead>
+            <tr>
+              <th style="text-align: center">Source language audio</th>
+              <th style="text-align: center">CVSS-T target language transcript</th>
+              <th style="text-align: center">Audio PaLM translation</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+          <li class="page-item active"><a id="s2tt-lang-nl" class="page-link" href="#">NL</a></li>
+          <li class="page-item"><a id="s2tt-lang-tr" class="page-link" href="#">TR</a></li>
+          <li class="page-item"><a id="s2tt-lang-et" class="page-link" href="#">ET</a></li>
+          <li class="page-item"><a id="s2tt-lang-mn" class="page-link" href="#">MN</a></li>
+          <li class="page-item"><a id="s2tt-lang-ar" class="page-link" href="#">AR</a></li>
+          <li class="page-item"><a id="s2tt-lang-lv" class="page-link" href="#">LV</a></li>
+          <li class="page-item"><a id="s2tt-lang-sl" class="page-link" href="#">SL</a></li>
+          <li class="page-item"><a id="s2tt-lang-sv" class="page-link" href="#">SV</a></li>
+          <li class="page-item"><a id="s2tt-lang-cy" class="page-link" href="#">CY</a></li>
+          <li class="page-item"><a id="s2tt-lang-ta" class="page-link" href="#">TA</a></li>
+          <li class="page-item"><a id="s2tt-lang-ja" class="page-link" href="#">JA</a></li>
+          <li class="page-item"><a id="s2tt-lang-id" class="page-link" href="#">ID</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container shadow p-5 mb-5 bg-white rounded">
+      <h3>ASR<a id="asr-section"/></h3>
+      <p class="mb-0">
+      In this section we show a few examples, per language, of the AudioPaLM transcribing the original audio.
+      </p>
+      <div id="asr-div-high" class="container pt-3 table-responsive">
+        <h4>High-resource languages</h4>
+        <table id="asr-high-table" class="table pt-2">
+          <thead>
+            <tr>
+              <th style="text-align: center">Original</th>
+              <th style="text-align: center">CVSS-T original transcript</th>
+              <th style="text-align: center">Audio PaLM transcription</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a id="asr-lang-fr" class="page-link" href="#">FR</a></li>
+          <li class="page-item active"><a id="asr-lang-de" class="page-link" href="#">DE</a></li>
+          <li class="page-item"><a id="asr-lang-ca" class="page-link" href="#">CA</a></li>
+          <li class="page-item"><a id="asr-lang-es" class="page-link" href="#">ES</a></li>
+        </ul>
+      </div>
+
+      <div id="asr-div-med" class="container pt-3 table-responsive">
+        <h4>Medium-resource languages</h4>
+        <table id="asr-med-table" class="table pt-2">
+          <thead>
+            <tr>
+              <th style="text-align: center">Original</th>
+              <th style="text-align: center">CVSS-T original transcript</th>
+              <th style="text-align: center">Audio PaLM transcription</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a id="asr-lang-fa" class="page-link" href="#">FA</a></li>
+          <li class="page-item active"><a id="asr-lang-it" class="page-link" href="#">IT</a></li>
+          <li class="page-item"><a id="asr-lang-ru" class="page-link" href="#">RU</a></li>
+          <li class="page-item"><a id="asr-lang-zh" class="page-link" href="#">ZH</a></li>
+          <li class="page-item"><a id="asr-lang-pt" class="page-link" href="#">PT</a></li>
+        </ul>
+      </div>
+
+      <div id="asr-div-low" class="container pt-3 table-responsive">
+        <h4>Low-resource languages</h4>
+        <table id="asr-low-table" class="table pt-2">
+          <thead>
+            <tr>
+              <th style="text-align: center">Original</th>
+              <th style="text-align: center">CVSS-T original transcript</th>
+              <th style="text-align: center">Audio PaLM transcription</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+          <li class="page-item active"><a id="asr-lang-nl" class="page-link" href="#">NL</a></li>
+          <li class="page-item"><a id="asr-lang-tr" class="page-link" href="#">TR</a></li>
+          <li class="page-item"><a id="asr-lang-et" class="page-link" href="#">ET</a></li>
+          <li class="page-item"><a id="asr-lang-mn" class="page-link" href="#">MN</a></li>
+          <li class="page-item"><a id="asr-lang-ar" class="page-link" href="#">AR</a></li>
+          <li class="page-item"><a id="asr-lang-lv" class="page-link" href="#">LV</a></li>
+          <li class="page-item"><a id="asr-lang-sl" class="page-link" href="#">SL</a></li>
+          <li class="page-item"><a id="asr-lang-sv" class="page-link" href="#">SV</a></li>
+          <li class="page-item"><a id="asr-lang-cy" class="page-link" href="#">CY</a></li>
+          <li class="page-item"><a id="asr-lang-ta" class="page-link" href="#">TA</a></li>
+          <li class="page-item"><a id="asr-lang-ja" class="page-link" href="#">JA</a></li>
+          <li class="page-item"><a id="asr-lang-id" class="page-link" href="#">ID</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </body>
+</html>

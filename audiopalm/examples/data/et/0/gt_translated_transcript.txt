@@ -1,0 +1,1 @@
+If you do not do this, there is no point to declare it.
