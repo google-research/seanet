@@ -15,7 +15,7 @@ let med_languages = ['fa', 'it', 'ru', 'zh', 'pt'];
 let high_languages = ['fr', 'de', 'ca', 'es'];
 
 function createAudioHTML(path) {
-  return '<audio controls controlslist="nodownload" class="px-1"> <source src=' +
+  return '<audio controls controlslist="nodownload noplaybackrate" class="px-1"> <source src=' +
       path +
       ' type="audio/wav">Your browser does not support the audio element.</audio>';
 }
