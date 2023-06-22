@@ -88,17 +88,17 @@ function fillS2TTTable(tableId, lang) {
   }
 }
 
-fillS2STable('s2s-high-table', 'es');
-fillS2STable('s2s-med-table', 'pt');
-fillS2STable('s2s-low-table', 'ar');
+fillS2STable('s2s-high-table', 'de');
+fillS2STable('s2s-med-table', 'it');
+fillS2STable('s2s-low-table', 'nl');
 
-fillS2TTTable('s2tt-high-table', 'es');
-fillS2TTTable('s2tt-med-table', 'pt');
-fillS2TTTable('s2tt-low-table', 'ar');
+fillS2TTTable('s2tt-high-table', 'de');
+fillS2TTTable('s2tt-med-table', 'it');
+fillS2TTTable('s2tt-low-table', 'nl');
 
-fillASRTable('asr-high-table', 'es');
-fillASRTable('asr-med-table', 'pt');
-fillASRTable('asr-low-table', 'ar');
+fillASRTable('asr-high-table', 'de');
+fillASRTable('asr-med-table', 'it');
+fillASRTable('asr-low-table', 'nl');
 
 $(document).ready(function() {
   for (let lang of high_languages) {

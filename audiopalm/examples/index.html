@@ -39,7 +39,7 @@
           Paul Rubenstein*, Chulayuth Asawaroengchai*, Duc Dung Nguyen*, <br>
           Ankur Bapna, Zalán Borsos, Félix de Chaumont Quitry, Peter Chen, Dalia El Badawy, Wei Han, Eugene Kharitonov,
           Hannah Muckenhirn, Dirk Padfield, James Qin, Danny Rozenberg, Tara Sainath, Johan Schalkwyk, Matt Sharifi,
-          Michelle Tadmor Ramanovich, Marco Tagliasacchi, Alex Tudor, Mihajlo Velimirović, Damien Vincent,
+          Michelle Tadmor Ramanovich, Marco Tagliasacchi, Alexandru Tudor, Mihajlo Velimirović, Damien Vincent,
           Jiahui Yu, Yongqiang Wang, Vicky Zayats, Neil Zeghidour, Yu Zhang, Zhishuai Zhang, Lukas Zilka, Christian Frank
         </p>
         <p><b>Google</b></p>
@@ -47,11 +47,9 @@
       <p>
         <b>Abstract.</b>
         We introduce AudioPaLM, a large language model for speech understanding and generation.
-        In recent years, modelling language through text has allowed scaling both models and data, improving linguistic capabilities while discarding paralinguistic information such as speaker identity or intonation.
-        In parallel, textless speech generation systems, which directly model language as spoken utterances have allowed integrating this paralinguistic information, yet their limited size and training data only provide them with limited linguistic knowledge.
-        In this work, we merge these two families of models and introduce AudioPaLM, a large language model for speech understanding and generation.
-        AudioPaLM fuses a text-based and a speech-based language model, namely PaLM-2 [Anil et al., 2023] and AudioLM [Borsos et al., 2022], into a multimodal architecture that can process and generate text and speech with applications such as speech recognition or speech-to-speech translation.
-        Moreover, we demonstrate that initializing AudioPaLM with the weights of a text-only large language model improves speech processing, successfully leveraging the larger quantity of text training data used in pretraining to assist with the speech tasks.
+        AudioPaLM fuses text-based and speech-based language models, PaLM-2 [Anil et al., 2023] and AudioLM [Borsos et al., 2022], into a unified multimodal architecture that can process and generate text and speech with applications including speech recognition and speech-to-speech translation.
+        AudioPaLM inherits the capability to preserve paralinguistic information such as speaker identity and intonation from AudioLM and the linguistic knowledge present only in text large language models such as PaLM-2.
+        We demonstrate that initializing AudioPaLM with the weights of a text-only large language model improves speech processing, successfully leveraging the larger quantity of text training data used in pretraining to assist with the speech tasks.
         The resulting model significantly outperforms existing systems for speech translation tasks and has the ability to perform zero-shot speech-to-text translation for many languages for which input/target language combinations were not seen in training.
         AudioPaLM also demonstrates features of audio language models, such as transferring a voice across languages based on a short spoken prompt.
       </p>
