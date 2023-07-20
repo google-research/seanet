@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Brain2Music</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Brain2Music: Reconstructing Music from Human Brain Activity">
+  <meta name="keywords" content="Music, AI, Google Research, Osaka University">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    td {
+      vertical-align: middle;
+    }
+
+    .abstract-wrapper {
+      max-width: 700px;
+      margin: auto;
+      text-align: justify;
+    }
+
+    .audio-wrapper {
+      display: block;
+      align-items: center;
+      height: 100%;
+    }
+
+    .spectrogram {
+      width: 20vw;
+      height: 5vw;
+      min-width: 100px;
+      max-width: 250px;
+      margin-bottom: 5px;
+    }
+
+    audio {
+      width: 20vw;
+      min-width: 100px;
+      max-width: 250px;
+      z-index: 100;
+    }
+
+    .timestamp-label {
+      color: gray;
+    }
+
+    table thead tr:last-child th {
+      border-bottom-color: #333;
+      border-bottom-width: 2px;
+    }
+
+    table tbody tr:last-child td {
+      border-bottom-width: 0;
+    }
+
+    table.wide-audio audio {
+      width: 40vw;
+      max-width: 40vw;
+    }
+
+    table.sticky-header {
+      /* To make the sticky header borders sticky. */
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    table.sticky-header thead {
+      position: sticky;
+      top: -1px;
+      background: white;
+      z-index: 200;
+      /* box-shadow: 0 7px 10px white; */
+    }
+
+    .btn-link {
+      margin: 0 10px;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    .container.no-max-width {
+      /* Can't scroll horizontally inside div, because sticky table headers are
+         not supported there (https://stackoverflow.com/a/70772702/3607984). */
+      width: fit-content;
+      max-width: none;
+    }
+
+    div.q-a-wrapper p:first-child {
+      font-weight: bold;
+    }
+
+    div.q-a-wrapper p:first-child::before {
+      content: "Q. ";
+    }
+
+    /* div.q-a-wrapper p:nth-child(2)::before {
+      content: "A. ";
+    } */
+
+    .font-size-small {
+      font-size: 70%;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+      <div class="text-center">
+        <h1 class="mb-3">Brain2Music: Reconstructing Music from Human Brain Activity</h1>
+        <p class="fst-italic mb-2">
+          Timo I. Denk<sup>∗1</sup>&emsp;Yu Takagi<sup>∗2,3</sup><br>Takuya Matsuyama<sup>2</sup>&emsp;Andrea
+          Agostinelli<sup>1</sup>&emsp;Tomoya Nakai<sup>4</sup><br>Christian Frank<sup>1</sup>&emsp;Shinji
+          Nishimoto<sup>2,3</sup>
+        </p>
+        <p class="fst-italic mb-5"><sup>1</sup>Google&emsp;<sup>2</sup>Osaka
+          University,
+          Japan&emsp;<sup>3</sup>NICT, Japan&emsp;<sup>4</sup>Araya Inc., Japan</p>
+      </div>
+      <div class="abstract-wrapper">
+        <p>
+          <b>Abstract</b>&emsp;
+          The process of reconstructing experiences from human brain activity offers a unique lens into how the brain
+          interprets and represents the world. In this paper, we introduce a method for reconstructing music from brain
+          activity, captured using functional magnetic resonance imaging (fMRI). Our approach uses either music
+          retrieval or the MusicLM music generation model conditioned on embeddings derived from fMRI data. The
+          generated music resembles the musical stimuli that human subjects experienced, with respect to semantic
+          properties like genre, instrumentation, and mood. We investigate the relationship between different components
+          of MusicLM and brain activity through a voxel-wise encoding modeling analysis. Furthermore, we discuss which
+          brain regions represent information derived from purely textual descriptions of music stimuli.
+        </p>
+        <p class="fst-italic font-size-small"><sup>*</sup>Equal contribution; correspondence to timodenk@google.com and
+          takagi.yuu.fbs@osaka-u.ac.jp</p>
+        <!--<p>
+          <b>Please find the full paper on <a href="#">arXiv</a></b>
+        </p>-->
+      </div>
+    </section>
+
+
+    <section class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+      <h3>Music Reconstruction with MusicLM (Highlights)</h3>
+
+      <div>This section contains three manually selected highlights (the best out of 10). The left-most column
+        contains the
+        simulus, i.e., the music that our human test subjects were exposed to while their brain activity was recorded.
+        The following three columns contain three samples from MusicLM which aim to reconstruct the original music.
+      </div>
+
+      <div class="pt-3">
+        <table class="table pt-2 sticky-header">
+          <thead>
+            <tr>
+              <th>Stimulus (GTZAN music)</th>
+              <th colspan="3">Reconstructions (generated by MusicLM)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/59882.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/06487.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/61379.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/36619.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/85378.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/49819.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/85273.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/19030.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/06819.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/64998.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/43111.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/83107.mp3"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pt-5 text-center"><img src="img/brain2music-pipeline-overview.svg" alt=""></div>
+        <div><i>An overview of our Brain2Music pipeline: High-dimensional fMRI responses are condensed into the
+            semantic,
+            128-dimensional music embedding space of MuLan <a href="https://arxiv.org/abs/2208.12415">(Huang et al.,
+              2022)</a>. Subsequently, the music generation model, MusicLM <a
+              href="https://arxiv.org/abs/2301.11325">(Agostinelli et al., 2023)</a>, is conditioned to
+            generate the music reconstruction, resembling the original stimulus. As an alternative we consider
+            retrieving
+            music from a large database, instead of generating it.</i></div>
+    </section>
+
+    <section class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded no-max-width" id="ret-vs-gen">
+      <h3>Comparison of Retrieval and Generation</h3>
+
+      <div>Below we compare retrieval from FMA with generation using MusicLM (three samples). The results are random
+        samples from test subject 1. There is one row for each of the 10 GTZAN genres.</div>
+
+      <div class="pt-3">
+        <table class="table pt-2 sticky-header">
+          <thead>
+            <tr>
+              <th>Stimulus</th>
+              <th colspan="1">Retrieval</th>
+              <th colspan="3">Generation with MusicLM</th>
+            </tr>
+            <tr>
+              <th>GTZAN music</th>
+              <th>From FMA</th>
+              <th>Gen #1</th>
+              <th>Gen #2</th>
+              <th>Gen #3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/53128.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/49950.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/09101.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/30961.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/19321.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/50103.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/96212.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/06633.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/21124.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/19561.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/59882.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/05133.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/06487.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/61379.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/36619.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/48357.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/01230.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/67419.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/81230.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/24665.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/06819.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/35936.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/64998.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/43111.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/83107.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/37075.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/77315.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/20202.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/44422.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/37098.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/54165.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/39895.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/63131.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/19288.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/72275.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/85378.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/50411.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/49819.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/85273.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/19030.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/17272.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/36922.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/47470.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/64309.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/86355.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/94663.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/50434.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/53487.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/56638.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/39419.mp3"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </section>
+
+    <section class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded no-max-width" id="all-subjects">
+      <h3>Comparison Across Subjects</h3>
+
+      <div>Below we compare retrieval from FMA with generation using MusicLM across all five subjects for which fMRI
+        data has been collected. The results are random
+        samples. There is one row for each of the 10 GTZAN genres.</div>
+
+      <div class="pt-3">
+        <table class="table pt-2 sticky-header">
+          <thead>
+            <tr>
+              <th>Stimulus</th>
+              <th colspan="5">Retrieval (FMA)</th>
+              <th colspan="5">Generation (MusicLM)</th>
+            </tr>
+            <tr>
+              <th>Stimulus</th>
+              <th>Subject 1</th>
+              <th>Subject 2</th>
+              <th>Subject 3</th>
+              <th>Subject 4</th>
+              <th>Subject 5</th>
+              <th>Subject 1</th>
+              <th>Subject 2</th>
+              <th>Subject 3</th>
+              <th>Subject 4</th>
+              <th>Subject 5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/53128.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/49950.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/38590.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/97085.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/14102.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/97428.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/53100.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/63906.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/13851.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/47900.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/60509.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/50103.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/96212.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/29478.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/96212.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/33114.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/96212.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/99904.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/52836.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/07694.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/66238.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/72946.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/59882.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/05133.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/35456.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/76307.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/02177.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/63454.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/48357.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/99820.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/22958.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/35617.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/48965.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/48357.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/01230.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/55732.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/81330.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/64127.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/44197.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/80753.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/83818.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/32364.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/26658.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/38523.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/06819.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/35936.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/01230.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/90528.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/06749.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/01230.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/98839.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/47101.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/69358.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/34801.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/77431.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/37075.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/77315.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/77315.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/62668.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/19793.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/77315.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/40823.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/42597.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/59652.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/57016.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/49042.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/54165.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/39895.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/36238.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/40857.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/18271.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/44157.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/46668.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/53929.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/52835.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/12134.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/95965.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/85378.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/50411.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/22611.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/50411.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/20505.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/37592.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/14083.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/67907.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/20628.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/26784.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/60511.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/17272.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/36922.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/50411.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/21559.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/11694.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/60530.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/81727.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/41591.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/43185.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/09325.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/46765.mp3"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/94663.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/50434.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/75325.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/38636.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/02177.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/13750.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/22663.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/40631.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/86794.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/80358.mp3"></div>
+              </td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/95205.mp3"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </section>
+
+    <!-- <section class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+                                          <h3>Music Retrieval vs. Generation</h3>
+
+      <div class="pt-3">
+        <table class="table pt-2">
+          <thead>
+            <tr>
+              <th>Stimulus (GTZAN music)</th>
+              <th>Retrieval (from GTZAN embedding)</th>
+              <th>Retrieval (from prediction)</th>
+              <th>MusicLM generation (from GTZAN embedding)</th>
+              <th>MusicLM generation (from prediction)</th>
+              </tr>
+              <tr>
+                <td>Music the test subject listened to while their brain activity was recorded.</td>
+                <td>Closest music in FMA based on the GTZAM music embedding (no reconstruction; upper bound for
+                  retrieval).
+                </td>
+                <td>Closest music in FMA based on the predicted embedding (reconstructed from fMRI).</td>
+                <td>Generated with MusicLM from GTZAN embedding (no reconstruction; upper bound on generation).</td>
+                <td>Generated with MusicLM from the predicted embedding (reconstruction from fMRI).</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="audio-wrapper"><audio controls preload="none" src="audio/gtzan-mock.mp3"></audio></div>
+              </td>
+              <td>
+                <div class="audio-wrapper"><audio controls preload="none" src="audio/musiclm-mock.mp3"></audio></div>
+              </td>
+              <td>
+                <div class="audio-wrapper"><audio controls preload="none" src="audio/musiclm-mock.mp3"></audio></div>
+              </td>
+              <td>
+                <div class="audio-wrapper"><audio controls preload="none" src="audio/musiclm-mock.mp3"></audio></div>
+              </td>
+              <td>
+                <div class="audio-wrapper"><audio controls preload="none" src="audio/musiclm-mock.mp3"></audio></div>
+              </td>
+            </tr>
+          </tbody>
+          </table>
+          </section> -->
+    <!-- <section class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+                                                                                                          <h3>Different Music Embeddings for Retrieval</h3>
+
+                                                                                                          <div class="pt-3">
+                                                                                                            <table class="table pt-2">
+                                                                                                              <thead>
+                                                                                                                <tr>
+                                                                                                                  <th>Stimulus (GTZAN music)</th>
+                                                                                                                  <th>MuLan (semantics)</th>
+                                                                                                                  <th>w2v-BERT (semantics and acoustics)</th>
+                                                                                                                  <th>SoundStream (acoustics)</th>
+                                                                                                                </tr>
+                                                                                                              </thead>
+                                                                                                              <tbody>
+            <tr>
+              <td>
+                <div class="audio-wrapper"><audio controls preload="none" src="audio/blues.00016_15s.mp3"></audio></div>
+              </td>
+              <td>
+                <div class="audio-wrapper"><audio controls preload="none" src="audio/066452.mp3"></audio></div>
+              </td>
+              <td>
+                <div class="audio-wrapper"><audio controls preload="none" src="audio/052139.mp3"></audio></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </section> -->
+
+    <section class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+      <h3>Encoding: Whole-brain Voxel-wise Modeling</h3>
+
+      <div class="pt-5">
+        <img src="img/result-encoding-compare-audio-derived-embeddings.png" alt=""><br>
+        <i>By constructing a brain encoding model, we find that two components of MusicLM (MuLan and w2v-BERT) have some
+          degree of
+          correspondence with human brain activity in the auditory cortex.</i>
+      </div>
+      <div class="pt-5">
+        <img src="img/result-encoding-mulan-text-vs-mulan-audio.png" alt=""><br>
+        <i>We also find that the brain regions representing information derived from text and music overlap.</i>
+      </div>
+    </section>
+
+    <section class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded" id="gtzan-caps">
+      <h3>GTZAN Music Captions</h3>
+
+      <div>
+        <p>We <a href="https://www.kaggle.com/datasets/nishimotolab/music-caption-brain2music/">release a music caption dataset</a> for the subset of GTZAN clips for which there are fMRI scans. Below are ten examples from the dataset.</p>
+      </div>
+
+      <div>
+        <table class="table pt-2 sticky-header">
+          <thead>
+            <tr>
+              <th>Clip name</th>
+              <th>GTZAN music (15s slice)</th>
+              <th>Human-written text caption</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr>
+              <td>blues.00017</td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/53128.mp3"></div>
+              </td>
+              <td>It is lazy blues with a laid-back tempo and relaxed atmosphere. The band structure is simple, with the
+                background rhythm punctuated by bass and guitar cutting. The impressive phrasing of the lead guitar
+                gives the piece a nostalgic impression.</td>
+            </tr>
+            <tr>
+              <td>classical.00008</td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/50103.mp3"></div>
+              </td>
+              <td>Several violins play the melody. The melody is simple and almost unison, but it moves between minor
+                and major keys and changes expression from one to the other.</td>
+            </tr>
+            <tr>
+              <td>country.00012</td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/59882.mp3"></div>
+              </td>
+              <td>This is a classic country song. You can hear clear singing and crisp acoustic guitar cutting. The wood
+                bass provides a solid groove with a two-beat rhythm. This is country music at its best. Ideal for nature
+                scenes and homely atmospheres.</td>
+            </tr>
+            <tr>
+              <td>disco.00004</td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/48357.mp3"></div>
+              </td>
+              <td>This music piece has a disco sound. Vocals and chorus create extended harmonies. The synthesiser
+                creates catchy melodies, while the drumming beats rhythmically. Effective tambourine sounds accentuate
+                the rhythms and add further dynamism. This music is perfect for dance parties, club floors and other
+                scenes of dancing and fun.</td>
+            </tr>
+            <tr>
+              <td>hiphop.00014</td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/06819.mp3"></div>
+              </td>
+              <td>This is a rap-rock piece with a lot of energy. The distorted guitars are impressive and provide an
+                energetic sound. The bass is an eight beat, creating a dynamic groove. The drums provide the backbone of
+                the rhythm section with their powerful hi-hats. The vocal and chorus interaction conveys tension and
+                passion and draws the audience in.</td>
+            </tr>
+            <tr>
+              <td>jazz.00040</td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/37075.mp3"></div>
+              </td>
+              <td>This is medium-tempo old jazz with female vocals. The band is a small band similar to a Dixie Jazz
+                formation, including clarinet, trumpet and trombone. The vocal harmonies are supported by a piano and
+                brass ensemble on a four beat with drums and bass.</td>
+            </tr>
+            <tr>
+              <td>metal.00026</td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/54165.mp3"></div>
+              </td>
+              <td>This is a metal instrumental piece with technical guitar solos and distortion effects. The heavy,
+                powerful bass creates a sense of speed, and the snare, bass and guitar create a sense of unity in unison
+                at the end. It is full of over-the-top playing techniques and intense energy.</td>
+            </tr>
+            <tr>
+              <td>pop.00032</td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/85378.mp3"></div>
+              </td>
+              <td>Passionate pops piece with clear sound and female vocals. The synth accompaniment spreads out
+                pleasantly and the tight bass grooves along. The beat-oriented drums drive the rhythm, creating a strong
+                and lively feeling. Can be used as background music in cafés and lounges to create a relaxed atmosphere.
+              </td>
+            </tr>
+            <tr>
+              <td>reggae.00013</td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/17272.mp3"></div>
+              </td>
+              <td>This reggae piece combines smooth, melodic vocals with a clear, high-pitched chorus. The bass is
+                swingy and supports the rhythm, while whistles and samplers of life sounds can be heard. It is perfect
+                for relaxing situations, such as reading in a laid-back café or strolling around town.</td>
+            </tr>
+            <tr>
+              <td>rock.00032</td>
+              <td>
+                <div class="audio-wrapper" data-music-src="audio/94663.mp3"></div>
+              </td>
+              <td>This rock piece is characterised by its extended vocals. The guitar plays scenically, while the bass
+                enhances the melody with rhythmic fills. The drums add dynamic rhythms to the whole piece. This music is
+                ideal for scenes with a sense of expansiveness and freedom, such as mountainous terrain with spectacular
+                natural scenery or driving scenes on the open road.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+      <h3>FAQ</h3>
+
+      <h4>General</h4>
+
+      <div class="q-a-wrapper">
+        <p>Could you describe your paper briefly?</p>
+        <p>
+          In this paper, we explore the relationship between the observed human brain activity when human subjects are
+          listening to music and the <a href="https://blog.google/technology/ai/musiclm-google-ai-test-kitchen/">Google MusicLM</a> music generation model that can create music from a text
+          description. As part of this study we observe that
+        <ul>
+          <li>When a human and MusicLM are exposed to the same music, the internal representations of MusicLM are
+            correlated with brain activity in certain regions.</li>
+          <li>When we use data from such regions as an input for MusicLM, we can predict and reconstruct the kinds of
+            music which the human subject was exposed to.</li>
+        </ul>
+        </p>
+      </div>
+
+      <div class="q-a-wrapper">
+        <p>Are there studies of brain decoding and encoding for music, or more generally for sound processing? What is
+          new about this study?</p>
+        <p>Previous studies have also examined the human brain activity while participants listened to music and
+          discovered musical feature representations in the brain. Given the recently published music generation models
+          such as MusicLM, it is now possible to study whether human brain activity can be converted into music with
+          such models.</p>
+      </div>
+
+      <h4>Methods</h4>
+
+      <div class="q-a-wrapper">
+        <p>What is MusicLM?</p>
+        <p>MusicLM is a type of language model that was trained on music and can be used to create music given a text
+          describing the desired music or other inputs such as a hummed melody together with some text describing the style of the
+          desired music. It is based on a generic framework called AudioLM, which uses language models to generate audio
+          at high fidelity. You can try out MusicLM in <a
+            href="https://aitestkitchen.withgoogle.com/experiments/music-lm">Google Labs</a>.</p>
+      </div>
+
+      <div class="q-a-wrapper">
+        <p>What brain data did you use?</p>
+        <p>We used functional magnetic resonance imaging (fMRI). This technique is detecting changes associated with
+          blood flow and relies on the fact that cerebral blood flow and neuronal activation are connected. That is, it
+          looks for indicators of changed blood flow and uses those to measure brain activity in the regions of
+          interest.</p>
+      </div>
+
+      <h4>Limitations</h4>
+
+      <div class="q-a-wrapper">
+        <p>There are three main factors that are currently limiting the quality of the reconstructed music when
+          observing human brain signals:
+
+        <ul>
+          <li>the information contained in the fMRI data is very temporally and spatially sparse (the observed regions
+            are 2×2×2mm<sup>3</sup> in size, many orders of magnitude larger than human neurons).</li>
+          <li>the information contained in the music embeddings from which we reconstruct the music (we used MuLan, in
+            which ten seconds of music are represented by just 128 numbers). </li>
+          <li>the limitations of our music generation system. When we studied <a
+              href="https://arxiv.org/abs/2301.11325">MusicLM</a>, we saw that it has room to improve both in the way it
+            adheres to the text prompt and in terms of the fidelity of the produced audio.</li>
+        </ul>
+
+        Taken together, the reconstructed music is not always close to what the subjects actually observed when the
+        brain scan was done.
+        </p>
+      </div>
+
+      <div class="q-a-wrapper">
+        <p>Could the model be transferred to a novel subject?</p>
+        <p>Because the brain’s anatomy differs from one person to the next, it is not possible to directly apply a model
+          created for one individual to another. Several methods have been proposed to compensate for these
+          differences, and it would be possible to use such methods to transfer models across subjects with a certain
+          degree of accuracy.
+        </p>
+      </div>
+
+      <div class="q-a-wrapper">
+        <p>What are the ethical/privacy issues that stem from this study?</p>
+        <p>Note that the decoding technology described in this paper is unlikely to become practical in the near future.
+          In particular, reading fMRI signals from the brain requires a volunteer to spend many hours in a large fMRI
+          scanner. While there are no immediate privacy implications from the technology as described here, as with this
+          study, any such analysis must only be performed with the informed consent of the studied individuals.</p>
+      </div>
+
+      <h4>Outlook</h4>
+
+      <div class="q-a-wrapper">
+        <p>What are the future directions?</p>
+        <p>Note that in this work, we perform music reconstruction from fMRI signals that were recorded while human
+          subjects were listening to music stimuli through headphones. More sophisticated technology to examine the
+          human brain will further advance the research in this area and the model’s capability to generate music
+          matching the heard stimulus. An exciting next step is to attempt the reconstruction of music or musical
+          attributes from a person’s imagination.</p>
+      </div>
+
+      <div class="q-a-wrapper">
+        <p>What are the potential applications?</p>
+        <p>With the amount of work required to obtain fMRI signals from the brain, we do not have direct applications in
+          mind. This work has been motivated by a fundamental research question: Does the MusicLM music generation model
+          contain components that are mirrored in the human brain, and if so, which are those? And if such connections
+          exist, how would music sound like that is inspired by signals from the human brain?</p>
+      </div>
+
+    </section>
+
+  </main>
+  <script>
+
+    function showAudioElements() {
+      const audioWrappers = document.querySelectorAll('.audio-wrapper[data-music-src]');
+
+      audioWrappers.forEach(wrapper => {
+        const musicSrc = wrapper.getAttribute('data-music-src');
+        const audioElement = document.createElement('audio');
+
+        audioElement.controls = true;
+        audioElement.preload = 'none';
+        audioElement.src = musicSrc;
+
+        wrapper.appendChild(audioElement);
+
+        const imageSrc = musicSrc + '-spec.png';
+
+        const divElement = document.createElement('div');
+        divElement.classList.add('image-wrapper');
+
+        const imgElement = document.createElement('img');
+        // The placeholder prevents the layout from jumping when the img loads.
+        imgElement.src = 'img/spec-placeholder.png'
+        imgElement.setAttribute('data-src', imageSrc);
+        imgElement.alt = 'Spectrogram';
+        imgElement.classList.add('spectrogram', 'lazy');
+
+        divElement.appendChild(imgElement);
+        wrapper.insertBefore(divElement, wrapper.firstChild);
+      });
+    }
+
+    function lazyLoadImages() {
+      const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+
+      if ("IntersectionObserver" in window) {
+        const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              let lazyImage = entry.target;
+              lazyImage.src = lazyImage.dataset.src;
+              lazyImage.classList.remove("lazy");
+              lazyImageObserver.unobserve(lazyImage);
+            }
+          });
+        });
+
+        lazyImages.forEach(lazyImage => {
+          lazyImageObserver.observe(lazyImage);
+        });
+      } else {
+        // Fallback for browsers that don't support IntersectionObserver.
+        lazyImages.forEach(lazyImage => {
+          lazyImage.src = lazyImage.dataset.src;
+          lazyImage.classList.remove("lazy");
+        });
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+      showAudioElements();
+      lazyLoadImages();
+    });
+
+  </script>
+</body>
+
+</html>
