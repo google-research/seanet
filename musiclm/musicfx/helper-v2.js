@@ -107,6 +107,7 @@ function generateTable(tableId, filenames, page, sxs=true, loop=false) {
 }
 
 function generateTableFromFiles(tableId, filenames, page) {
+  const numPerPage = 6;
   const prefix = `audio_samples/${tableId}/`;
   let table = document.getElementById(tableId);
   clearTable(table);
