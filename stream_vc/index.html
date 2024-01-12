@@ -1,1519 +1,902 @@
+
 <!DOCTYPE html>
-
 <html>
-
   <head>
-
     <title>StreamVC</title>
-
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="helper.js" defer></script>
+    <style>
+      td {
+        vertical-align: middle;
+        text-align: center;
+      }
+      audio {
+        width: 20vw;
+        min-width: 130px;
+        max-width: 280px;
+      }
+      h1, h2, h3, h4, h5, h6, body, b, strong, th {
+        color: #595959;
+      }
+    </style>
   </head>
-
   <body>
+    <div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+      <div class="text-center">
+        <h1>StreamVC:</h1><h3>Real-Time Low-Latency Voice Conversion</h3>
+        <p class="lead">
+          [<a
+            href="https://arxiv.org/abs/2401.03078"
+            >paper</a
+          >]
+        </p>
+        <p class="fst-italic mb-0">
+          Yang Yang, Yury Kartynnik, Yunpeng Li, Jiuqiang Tang, Xing Li, George Sung, Matthias Grundmann
+        </p>
+        <p><b>Google</b></p>
+      </div>
+      <p>
+        <b>Abstract.</b>  
+We present StreamVC, a streaming voice conversion solution that preserves the content and prosody of any source speech while matching the voice timbre from any target speech. Unlike previous approaches, StreamVC produces the resulting waveform at low latency from the input signal even on a mobile platform, making it applicable to real-time communication scenarios like calls and video conferencing, and addressing use cases such as voice anonymization in these scenarios. Our design leverages the architecture and training strategy of the SoundStream neural audio codec for lightweight high-quality speech synthesis. We demonstrate the feasibility of learning soft speech units causally, as well as the effectiveness of supplying whitened fundamental frequency information to improve pitch stability without leaking the source timbre information.
+      </p>
+    </div>
 
 
+    <div class="container shadow p-5 mb-5 bg-white rounded">
+      <h3>Samples (target speaker p231)<a id="dialogue"/></h3>
+      <p class="mb-0">
+      </p>
+      
+      <table><tr><th>Target speech: </th><td><audio controls><source src= "samples/target/p231_001_002_003.wav"  type= "audio/mp3"> </source></audio>
+      </td></tr></table>
 
-<table><tr><td>Target p231</td><td><audio controls>
-
-  <source src= "samples/target/p231_001_002_003.wav"  type= "audio/mp3"> </source>
-
-</audio>
-
-</td></tr></table>
-
-<table><tr><td>Source</td><td>StreamVC</td><td>QuickVC</td><td>DiffVC</td><td>VQMIVC</td><td>PPGVC</td></tr><tr><td><audio controls>
-
+      <div class="container pt-3 table-responsive">
+        <table
+          class="table table-hover"
+          id="dialogue-table"
+        >
+          <thead>
+            <tr>
+              <th style="text-align: center;">Source</th>
+              <th style="text-align: center;">StreamVC</th>
+              <th style="text-align: center">QuickVC</th>
+              <th style="text-align: center">DiffVC</th>
+              <th style="text-align: center">VQMIVC</th>
+              <th style="text-align: center">PPGVC</th>
+            </tr>
+          </thead>
+          <tbody>
+<tr><td><audio controls>
   <source src= "samples/source/1089_134686_000001_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p231_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p231_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p231_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p231_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p231_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1188_133604_000004_000005.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p231_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p231_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p231_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p231_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p231_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1221_135766_000026_000005.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p231_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p231_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p231_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p231_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p231_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1284_1180_000005_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p231_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p231_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p231_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p231_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p231_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1580_141083_000006_000002.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p231_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p231_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p231_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p231_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p231_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1995_1826_000005_000002.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p231_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p231_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p231_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p231_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p231_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/2300_131720_000002_000003.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p231_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p231_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p231_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p231_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p231_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/237_126133_000004_000000.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p231_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p231_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p231_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p231_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p231_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/260_123286_000005_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p231_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p231_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p231_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p231_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p231_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/3729_6852_000004_000003.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p231_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p231_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p231_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p231_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p231_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
+</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
 
-</td></tr></table>
+    <div class="container shadow p-5 mb-5 bg-white rounded">
+      <h3>Samples (target speaker p334)<a id="dialogue"/></h3>
+      <p class="mb-0">
+      </p>
+      
+      <table><tr><th>Target speech: </th><td><audio controls><source src= "samples/target/p334_001_002_003.wav"  type= "audio/mp3"> </source></audio>
+      </td></tr></table>
 
-<hr>
-
-
-
-<table><tr><td>Target p334</td><td><audio controls>
-
-  <source src= "samples/target/p334_001_002_003.wav"  type= "audio/mp3"> </source>
-
-</audio>
-
-</td></tr></table>
-
-<table><tr><td>Source</td><td>StreamVC</td><td>QuickVC</td><td>DiffVC</td><td>VQMIVC</td><td>PPGVC</td></tr><tr><td><audio controls>
-
+      <div class="container pt-3 table-responsive">
+        <table
+          class="table table-hover"
+          id="dialogue-table"
+        >
+          <thead>
+            <tr>
+              <th style="text-align: center;">Source</th>
+              <th style="text-align: center;">StreamVC</th>
+              <th style="text-align: center">QuickVC</th>
+              <th style="text-align: center">DiffVC</th>
+              <th style="text-align: center">VQMIVC</th>
+              <th style="text-align: center">PPGVC</th>
+            </tr>
+          </thead>
+          <tbody>
+<tr><td><audio controls>
   <source src= "samples/source/1089_134686_000001_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p334_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p334_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p334_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p334_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p334_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1188_133604_000004_000005.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p334_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p334_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p334_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p334_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p334_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1221_135766_000026_000005.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p334_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p334_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p334_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p334_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p334_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1284_1180_000005_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p334_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p334_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p334_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p334_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p334_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1580_141083_000006_000002.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p334_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p334_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p334_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p334_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p334_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1995_1826_000005_000002.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p334_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p334_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p334_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p334_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p334_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/2300_131720_000002_000003.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p334_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p334_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p334_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p334_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p334_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/237_126133_000004_000000.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p334_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p334_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p334_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p334_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p334_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/260_123286_000005_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p334_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p334_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p334_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p334_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p334_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/3729_6852_000004_000003.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p334_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p334_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p334_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p334_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p334_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
+</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
 
-</td></tr></table>
 
-<hr>
+    <div class="container shadow p-5 mb-5 bg-white rounded">
+      <h3>Samples (target speaker p362)<a id="dialogue"/></h3>
+      <p class="mb-0">
+      </p>
+      
+      <table><tr><th>Target speech: </th><td><audio controls><source src= "samples/target/p362_001_002_003.wav"  type= "audio/mp3"> </source></audio>
+      </td></tr></table>
 
-
-
-<table><tr><td>Target p362</td><td><audio controls>
-
-  <source src= "samples/target/p362_001_002_003.wav"  type= "audio/mp3"> </source>
-
-</audio>
-
-</td></tr></table>
-
-<table><tr><td>Source</td><td>StreamVC</td><td>QuickVC</td><td>DiffVC</td><td>VQMIVC</td><td>PPGVC</td></tr><tr><td><audio controls>
-
+      <div class="container pt-3 table-responsive">
+        <table
+          class="table table-hover"
+          id="dialogue-table"
+        >
+          <thead>
+            <tr>
+              <th style="text-align: center;">Source</th>
+              <th style="text-align: center;">StreamVC</th>
+              <th style="text-align: center">QuickVC</th>
+              <th style="text-align: center">DiffVC</th>
+              <th style="text-align: center">VQMIVC</th>
+              <th style="text-align: center">PPGVC</th>
+            </tr>
+          </thead>
+          <tbody>
+<tr><td><audio controls>
   <source src= "samples/source/1089_134686_000001_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p362_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p362_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p362_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p362_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p362_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1188_133604_000004_000005.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p362_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p362_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p362_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p362_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p362_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1221_135766_000026_000005.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p362_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p362_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p362_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p362_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p362_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1284_1180_000005_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p362_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p362_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p362_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p362_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p362_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1580_141083_000006_000002.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p362_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p362_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p362_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p362_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p362_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1995_1826_000005_000002.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p362_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p362_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p362_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p362_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p362_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/2300_131720_000002_000003.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p362_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p362_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p362_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p362_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p362_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/237_126133_000004_000000.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p362_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p362_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p362_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p362_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p362_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/260_123286_000005_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p362_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p362_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p362_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p362_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p362_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/3729_6852_000004_000003.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p362_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p362_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p362_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p362_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p362_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
+</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
 
-</td></tr></table>
 
-<hr>
+    <div class="container shadow p-5 mb-5 bg-white rounded">
+      <h3>Samples (target speaker p360)<a id="dialogue"/></h3>
+      <p class="mb-0">
+      </p>
+      
+      <table><tr><th>Target speech: </th><td><audio controls><source src= "samples/target/p360_001_002_003.wav"  type= "audio/mp3"> </source></audio>
+      </td></tr></table>
 
-
-
-<table><tr><td>Target p360</td><td><audio controls>
-
-  <source src= "samples/target/p360_001_002_003.wav"  type= "audio/mp3"> </source>
-
-</audio>
-
-</td></tr></table>
-
-<table><tr><td>Source</td><td>StreamVC</td><td>QuickVC</td><td>DiffVC</td><td>VQMIVC</td><td>PPGVC</td></tr><tr><td><audio controls>
-
+      <div class="container pt-3 table-responsive">
+        <table
+          class="table table-hover"
+          id="dialogue-table"
+        >
+          <thead>
+            <tr>
+              <th style="text-align: center;">Source</th>
+              <th style="text-align: center;">StreamVC</th>
+              <th style="text-align: center">QuickVC</th>
+              <th style="text-align: center">DiffVC</th>
+              <th style="text-align: center">VQMIVC</th>
+              <th style="text-align: center">PPGVC</th>
+            </tr>
+          </thead>
+          <tbody>
+<tr><td><audio controls>
   <source src= "samples/source/1089_134686_000001_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p360_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p360_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p360_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p360_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1089_134686_000001_000001_to_p360_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1188_133604_000004_000005.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p360_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p360_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p360_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p360_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1188_133604_000004_000005_to_p360_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1221_135766_000026_000005.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p360_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p360_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p360_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p360_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1221_135766_000026_000005_to_p360_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1284_1180_000005_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p360_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p360_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p360_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p360_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1284_1180_000005_000001_to_p360_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1580_141083_000006_000002.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p360_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p360_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p360_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p360_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1580_141083_000006_000002_to_p360_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/1995_1826_000005_000002.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p360_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p360_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p360_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p360_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/1995_1826_000005_000002_to_p360_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/2300_131720_000002_000003.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p360_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p360_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p360_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p360_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/2300_131720_000002_000003_to_p360_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/237_126133_000004_000000.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p360_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p360_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p360_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p360_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/237_126133_000004_000000_to_p360_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/260_123286_000005_000001.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p360_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p360_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p360_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p360_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/260_123286_000005_000001_to_p360_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td></tr><tr><td><audio controls>
-
   <source src= "samples/source/3729_6852_000004_000003.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p360_001_002_003_algo_vc_2023_08_11.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p360_001_002_003_algo_QuickVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p360_001_002_003_algo_DiffVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p360_001_002_003_algo_VQMIVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
 </td><td><audio controls>
-
   <source src= "samples/converted/3729_6852_000004_000003_to_p360_001_002_003_algo_PPGVC.wav"  type= "audio/mp3"> </source>
-
 </audio>
-
-</td></tr></table>
-
-<hr>
+</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
 
 
 
 
 
   </body>
-
 </html>
-
-
-
-
