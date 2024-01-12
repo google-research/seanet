@@ -1,0 +1,149 @@
+<html lang="en">
+
+<head>
+
+  <title>HTML Elements Reference</title>
+
+</head>
+
+
+
+<style>
+
+table, th, td {
+
+  border: 1px solid black;
+
+  border-collapse: collapse;
+
+}
+
+</style>
+
+<body>
+
+
+
+<h1>BASNet: Binaural Angular Separation Network  </h1>
+
+<h2>Abstract</h2>
+
+<p>We propose a neural network model that can separate target speech sources from interfering sources at different angular regions using two microphones. The model is trained with simulated room impulse responses (RIRs) using omni-directional microphones without needing to collect real RIRs. By relying on specific angular regions and multiple room simulations, the model utilizes consistent time difference of arrival (TDOA) cues, or what we call delay contrast, to separate target and interference sources while remaining robust in various reverberation environments. We demonstrate the model is not only generalizable to a commercially available device with a slightly different microphone geometry, but also outperforms our previous work which uses one additional microphone on the same device. The model runs in real-time on-device and is suitable for low-latency streaming applications such as telephony and video conferencing.</p>
+
+
+
+
+
+<h2>Data collection</h2>
+
+
+
+<p>To showcase the effectiveness of BASNet in spatial separation, we use an off-the-shelf Pixel table to record ESTI speech played back from three directions: 0 degree in front to the device as well as 90/270 degree which are to the left and right of the device. The recordings are the capture of the two built-in microphones around the front-view camera with 7cm spacing. The 0 degree recording is then mixed with 90 or 270 degree speech at various offsets to create overlapped or non-overlapped speech at 0-dB SNR (third column). The mixed two channel audios are then passed through a BASNet model to extract only the 0-degree audio from the mixture.</p>
+
+
+
+<p>Note that we used a version of BASNet trained with 48kHz speech end-to-end, whereas the paper describes the 16kHz version of the BASNet.</p>
+
+
+
+
+
+
+
+<h2>Samples</h2>
+
+
+
+
+
+
+
+<table><tr><td style="text-align: center">Angle of interference speech</td><td style="text-align: center">Mixing of target and interference speech</td><td style="text-align: center">Mixed stereo audio</td><td style="text-align: center">48kHz-BASNet cleaned up audio</td></tr><tr><td style="text-align: center">N/A</td><td style="text-align: center">no interference speech</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/original_0.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/original_0_basnet.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td></tr><tr><td style="text-align: center">90 degree</td><td style="text-align: center">overlapped target and inference of opposite gender</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_overlapped_opposite_gender_speech_90.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_overlapped_opposite_gender_speech_90_basnet.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td></tr><tr><td style="text-align: center">90 degree</td><td style="text-align: center">overlapped target and inference of the same gender</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_overlapped_same_gender_speech_90.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_overlapped_same_gender_speech_90_basnet.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td></tr><tr><td style="text-align: center">90 degree</td><td style="text-align: center">non-overlapped</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_non_overlapped_90.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_non_overlapped_90_basnet.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td></tr><tr><td style="text-align: center">270 degree</td><td style="text-align: center">overlapped target and inference of opposite gender</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_overlapped_opposite_gender_speech_270.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_overlapped_opposite_gender_speech_270_basnet.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td></tr><tr><td style="text-align: center">270 degree</td><td style="text-align: center">overlapped target and inference of the same gender</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_overlapped_same_gender_speech_270.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_overlapped_same_gender_speech_270_basnet.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td></tr><tr><td style="text-align: center">270 degree</td><td style="text-align: center">non-overlapped</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_non_overlapped_270.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td><td style="text-align: center"><audio controls>
+
+  <source src= "samples/mixed_non_overlapped_270_basnet.wav"  type= "audio/mp3"> </source>
+
+</audio>
+
+</td></tr></table>
+
+</body>
+
+</html>
