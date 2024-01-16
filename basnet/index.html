@@ -37,7 +37,7 @@ Yang Yang, George Sung, Shao-Fu Shih, Hakan Erdogan, Chehung Lee, Matthias Grund
         <p><b>Google</b></p>
       </div>
       <p>
-        <b>Abstract.</b>  
+        <b>Abstract.</b>
 We propose a neural network model that can separate target speech sources from interfering sources at different angular regions using two microphones. The model is trained with simulated room impulse responses (RIRs) using omni-directional microphones without needing to collect real RIRs. By relying on specific angular regions and multiple room simulations, the model utilizes consistent time difference of arrival (TDOA) cues, or what we call delay contrast, to separate target and interference sources while remaining robust in various reverberation environments. We demonstrate the model is not only generalizable to a commercially available device with a slightly different microphone geometry, but also outperforms our previous work which uses one additional microphone on the same device. The model runs in real-time on-device and is suitable for low-latency streaming applications such as telephony and video conferencing.
       </p>
     </div>
@@ -46,7 +46,12 @@ We propose a neural network model that can separate target speech sources from i
     <div class="container shadow p-5 mb-5 bg-white rounded">
       <h3>Data Collection<a id="dialogue"/></h3>
       <p class="mb-0">
-To showcase the effectiveness of BASNet in spatial separation, we use an off-the-shelf Pixel table to record ESTI speech played back from three directions: 0 degree in front to the device as well as 90/270 degree which are to the left and right of the device. The recordings are the capture of the two built-in microphones around the front-view camera with 7cm spacing. The 0 degree recording is then mixed with 90 or 270 degree speech at various offsets to create overlapped or non-overlapped speech at 0-dB SNR (third column in the table below). The mixed two channel audios are then passed through a 48kHz-BASNet model to extract only the 0-degree audio from the mixture.
+To showcase the effectiveness of BASNet in spatial separation, we use an off-the-shelf Pixel tablet to record ESTI
+speech played back from three directions: 0 degree in front to the device as well as 90/270 degree which are to the left
+and right of the device. The recordings are the capture of the two built-in microphones around the front-view camera
+with 7cm spacing. The 0 degree recording is then mixed with 90 or 270 degree speech at various offsets to create
+overlapped or non-overlapped speech at 0-dB SNR (third column in the table below). The mixed two channel audios are then
+passed through a 48kHz-BASNet model to extract only the 0-degree audio from the mixture.
       </p>
     </div>
 
@@ -76,13 +81,19 @@ To showcase the effectiveness of BASNet in spatial separation, we use an off-the
 </td><td><audio controls>
   <source src= "samples/original_0_basnet.wav"  type= "audio/mp3"> </source>
 </audio>
-</td></tr><tr><td ">90 degree</td><td>overlapped target and inference of opposite gender</td><td><audio controls>
+</td>
+</tr>
+<tr>
+  <td ">90 degree</td><td>overlapped target and interference of opposite gender</td><td><audio controls>
   <source src= "samples/mixed_overlapped_opposite_gender_speech_90.wav"  type= "audio/mp3"> </source>
 </audio>
 </td><td><audio controls>
   <source src= "samples/mixed_overlapped_opposite_gender_speech_90_basnet.wav"  type= "audio/mp3"> </source>
 </audio>
-</td></tr><tr><td ">90 degree</td><td>overlapped target and inference of the same gender</td><td><audio controls>
+</td>
+</tr>
+<tr>
+  <td ">90 degree</td><td>overlapped target and interference of the same gender</td><td><audio controls>
   <source src= "samples/mixed_overlapped_same_gender_speech_90.wav"  type= "audio/mp3"> </source>
 </audio>
 </td><td><audio controls>
@@ -94,13 +105,19 @@ To showcase the effectiveness of BASNet in spatial separation, we use an off-the
 </td><td><audio controls>
   <source src= "samples/mixed_non_overlapped_90_basnet.wav"  type= "audio/mp3"> </source>
 </audio>
-</td></tr><tr><td ">270 degree</td><td>overlapped target and inference of opposite gender</td><td><audio controls>
+</td>
+</tr>
+<tr>
+  <td ">270 degree</td><td>overlapped target and interference of opposite gender</td><td><audio controls>
   <source src= "samples/mixed_overlapped_opposite_gender_speech_270.wav"  type= "audio/mp3"> </source>
 </audio>
 </td><td><audio controls>
   <source src= "samples/mixed_overlapped_opposite_gender_speech_270_basnet.wav"  type= "audio/mp3"> </source>
 </audio>
-</td></tr><tr><td ">270 degree</td><td>overlapped target and inference of the same gender</td><td><audio controls>
+</td>
+</tr>
+<tr>
+  <td ">270 degree</td><td>overlapped target and interference of the same gender</td><td><audio controls>
   <source src= "samples/mixed_overlapped_same_gender_speech_270.wav"  type= "audio/mp3"> </source>
 </audio>
 </td><td><audio controls>
@@ -118,7 +135,7 @@ To showcase the effectiveness of BASNet in spatial separation, we use an off-the
         </table>
       </div>
     </div>
-    
+
 
 
 
