@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MusicRL</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="helper-v2.js" defer></script>
+    <style>
+      html {
+        --bg: #202124;
+        --fg: #fff;
+        --accent: #444;
+        --button-bg: #e52592;
+        --button-text: #fff;
+        --header-color: var(--fg);
+        --text-area-bg: #333;
+        --text-area-fg: #fff;
+        --fonts: system-ui, Helvetica, Arial, sans-serif;
+        font-family: var(--fonts);
+        color: var(--fg);
+        background: var(--bg);
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+      }
+
+      p, sup, th, td, h3 {
+        color: var(--text-area-fg);
+      }
+      td {
+        vertical-align: middle;
+      }
+      audio {
+        width: 20vw;
+        min-width: 100px;
+        max-width: 250px;
+      }
+      .timestamp-label {
+        color: gray;
+      }
+      table.wide-audio audio {
+        width: 40vw;
+        max-width: 40vw;
+      }
+      /* Style for normal state of the link */
+      a {
+        color: var(--button-bg);
+	      font-weight: bold; /* Makes the link text bold */
+	      text-decoration: none; /* Removes the underline */
+      }
+
+      /* Style for when the mouse hovers over the link */
+      a:hover {
+        color: grey;
+	      text-decoration: underline; /* Adds underline on hover */
+      }
+
+      .title {
+        font-weight: bold;
+        font-size: 28px;
+        border-bottom: none;
+        margin-top: 20px;
+        color: var(--header-color);
+        height: var(--header-height);
+      }
+
+      .pagination > li > a {
+        background-color: white;
+        color: #5A4181;
+      }
+      .pagination > li > a:focus,
+      .pagination > li > a:hover,
+      .pagination > li > span:focus,
+      .pagination > li > span:hover {
+        color: #5a5a5a;
+        background-color: #eee;
+        border-color: #ddd;
+      }
+      .pagination > .active > a {
+        color: white;
+        background-color: var(--button-bg) !Important;
+        border: solid 1px var(--button-bg) !Important;
+      }
+      .pagination > .active > a:hover {
+        background-color: var(--button-bg) !Important;
+        border: solid 1px var(--button-bg);
+      }
+      .poc-label {
+        color: white; 
+      }
+      .container-centered {
+    text-align: center;
+}
+    </style>
+  </head>
+  <body>
+    <div class="container pt-5 mt-5 shadow p-5 mb-5 bg-dark rounded">
+      <div class="text-center title">
+        <h1>MusicRL: Aligning Music Generation to Human Preferences</h1>
+      </div>
+        <div class="container-centered">
+        <a href="">Paper</a>
+        <br>
+        <br>
+        <p class="fst-italic mb-0">
+          Geoffrey Cideron, Sertan Girgin, Mauro Verzetti, Damien Vincent, Matej Kastelic, Zalán Borsos, Brian McWilliams, Victor Ungureanu, Olivier Bachem, *Olivier Pietquin, *Matthieu Geist, Leonard Hussenot, *Neil Zeghidour, Andrea Agostinelli.
+        </p>
+        <br>
+        <p>Google DeepMind</p> 
+        <p class="work-note"> * Work done while at Google DeepMind</p>
+        </div>
+      <br>
+      <p>
+        <b>Abstract</b> We propose MusicRL, a music generation system finetuned from human feedback. Appreciation of text-to-music models is particularly subjective since the concept of musicality as well as the specific intention behind a caption are user-dependent (e.g. a caption such as “upbeat work-out music” can map to a retro guitar solo or atechnopop beat). Not only this makes supervised training of such models challenging, but it also calls for integrating continuous human feedback in their post-deployment finetuning. MusicRL is a pretrained autoregressive MusicLM <a href="https://arxiv.org/pdf/2301.11325.pdf">(Agostinelli et al., 2023)</a> model of discrete audio tokens finetuned with reinforcement learning to maximize sequence-level rewards. We first design reward functions related specifically to text-adherence and audio quality with the help from selected raters, and use those to finetune MusicLM. We then deploy the pretrained model to users and collect a substantial dataset comprising 300,000 pairwise preferences. Using Reinforcement Learning from Human Feedback (RLHF), we train MusicRL-U, the first text-to-music model that incorporates human feedback at scale. Human evaluations show that both MusicRL-R and MusicRL-U are preferred to the baseline. Ultimately, MusicRL-RU combines the two approaches and results in the best model according to human raters. Ablation studies shed light on the musical attributes influencing human preferences, indicating that text adherence and quality only account for a part of it. This underscores the prevalence of subjectivity in musical appreciation and calls for further involvement of human listeners in the finetuning of music generation models.
+      <br>
+      <br>
+          <div class="poc-info">
+          <span class="poc-label">Corresponding authors:</span>
+          <a href="mailto:gcideron@google.com">gcideron@google.com</a>
+          <span class="poc-label">, </span> 
+          <a href="mailto:agostinelli@google.com">agostinelli@google.com</a>
+        </div>
+      <br>
+      </p>
+    </div>
+
+    <div class="container pt-5 mt-5 shadow p-5 mb-5 bg-dark rounded">
+      <h3>Comparing Base and RL-Finetuned Models. Examples randomly sampled from human evaluations.</h3>
+      <div class="container pt-1">
+        <div class="table-responsive pt-1">
+          <table
+            class="table pt-1"
+            id="comparison"
+          >
+            <thead>
+              <tr>
+                <th>Caption</th>
+                <th style="text-align: center">MusicLM</th>
+                <th style="text-align: center">MusicRL-R</th>
+                <th style="text-align: center">MusicRL-U</th>
+                <th style="text-align: center">MusicRL-RU</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <ul class="pagination justify-content-center">
+            <li class="page-item active">
+              <a id="comparison-1" class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+              <a id="comparison-2" class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item">
+              <a id="comparison-3" class="page-link" href="#">3</a>
+            </li>
+            <li class="page-item">
+              <a id="comparison-4" class="page-link" href="#">4</a>
+            </li>
+            <li class="page-item">
+              <a id="comparison-5" class="page-link" href="#">5</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
