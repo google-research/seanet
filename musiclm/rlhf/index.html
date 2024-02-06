@@ -93,11 +93,16 @@
         border: solid 1px var(--button-bg);
       }
       .poc-label {
-        color: white; 
+        color: white;
+        font-size: 14px;
       }
       .container-centered {
     text-align: center;
 }
+.footnote-link {
+    font-size: 10px;  /* Adjust the size as needed */
+    color: white;     
+  }
     </style>
   </head>
   <body>
@@ -110,27 +115,30 @@
         <br>
         <br>
         <p class="fst-italic mb-0">
-          Geoffrey Cideron, Sertan Girgin, Mauro Verzetti, Damien Vincent, Matej Kastelic, Zalán Borsos, Brian McWilliams, Victor Ungureanu, Olivier Bachem, *Olivier Pietquin, *Matthieu Geist, Leonard Hussenot, *Neil Zeghidour, Andrea Agostinelli.
+          Geoffrey Cideron, Sertan Girgin, Mauro Verzetti, Damien Vincent, Matej Kastelic, Zalán Borsos, Brian McWilliams, Victor Ungureanu, Olivier Bachem, Olivier Pietquin<sup><a href="#cohere">1</a></sup>, Matthieu Geist<sup><a href="#cohere">1</a></sup>, Léonard Hussenot, Neil Zeghidour<sup><a href="#kyutai">2</a></sup> and Andrea Agostinelli
         </p>
         <br>
-        <p>Google DeepMind</p> 
-        <p class="work-note"> * Work done while at Google DeepMind</p>
+        <p>Google DeepMind
+        <br>
+        <a id="cohere" class="footnote-link"><sup>1</sup> Now at Cohere</a>
+        <a id="kyutai" class="footnote-link"><sup>2</sup> Now at Kyutai</a>
+        </p>
+        </p>
+        <br>
         </div>
-      <br>
       <p>
-        <b>Abstract</b> We propose MusicRL, a music generation system finetuned from human feedback. Appreciation of text-to-music models is particularly subjective since the concept of musicality as well as the specific intention behind a caption are user-dependent (e.g. a caption such as “upbeat work-out music” can map to a retro guitar solo or atechnopop beat). Not only this makes supervised training of such models challenging, but it also calls for integrating continuous human feedback in their post-deployment finetuning. MusicRL is a pretrained autoregressive MusicLM <a href="https://arxiv.org/pdf/2301.11325.pdf">(Agostinelli et al., 2023)</a> model of discrete audio tokens finetuned with reinforcement learning to maximize sequence-level rewards. We first design reward functions related specifically to text-adherence and audio quality with the help from selected raters, and use those to finetune MusicLM. We then deploy the pretrained model to users and collect a substantial dataset comprising 300,000 pairwise preferences. Using Reinforcement Learning from Human Feedback (RLHF), we train MusicRL-U, the first text-to-music model that incorporates human feedback at scale. Human evaluations show that both MusicRL-R and MusicRL-U are preferred to the baseline. Ultimately, MusicRL-RU combines the two approaches and results in the best model according to human raters. Ablation studies shed light on the musical attributes influencing human preferences, indicating that text adherence and quality only account for a part of it. This underscores the prevalence of subjectivity in musical appreciation and calls for further involvement of human listeners in the finetuning of music generation models.
+        <p align="justify">
+        <b>Abstract</b> We propose MusicRL, the first music generation system finetuned from human feedback. Appreciation of text-to-music models is particularly subjective since the concept of musicality as well as the specific intention behind a caption are user-dependent (e.g. a caption such as “upbeat work-out music” can map to a retro guitar solo or atechnopop beat). Not only this makes supervised training of such models challenging, but it also calls for integrating continuous human feedback in their post-deployment finetuning. MusicRL is a pretrained autoregressive MusicLM <a href="https://arxiv.org/pdf/2301.11325.pdf">(Agostinelli et al., 2023)</a> model of discrete audio tokens finetuned with reinforcement learning to maximise sequence-level rewards. We design reward functions related specifically to text-adherence and audio quality with the help from selected raters, and use those to finetune MusicLM into MusicRL-R. We deploy MusicLM to users and collect a substantial dataset of 300,000 pairwise preferences. Using Reinforcement Learning from Human Feedback (RLHF), we train MusicRL-U, the first text-to-music model that incorporates human feedback at scale. Human evaluations show that both MusicRL-R and MusicRL-U are preferred to the baseline. Ultimately, MusicRL-RU combines the two approaches and results in the best model according to human raters. Ablation studies shed light on the musical attributes influencing human preferences, indicating that text adherence and quality only account for a part of it. This underscores the prevalence of subjectivity in musical appreciation and calls for further involvement of human listeners in the finetuning of music generation models.
+    </p>
       <br>
-      <br>
-          <div class="poc-info">
-          <span class="poc-label">Corresponding authors:</span>
-          <a href="mailto:gcideron@google.com">gcideron@google.com</a>
-          <span class="poc-label">, </span> 
-          <a href="mailto:agostinelli@google.com">agostinelli@google.com</a>
-        </div>
-      <br>
-      </p>
+      <hr style="width: 50%; margin-left: 0; color: white;">
+      <div class="poc-info">
+      <span class="poc-label">Corresponding authors:</span>
+      <a href="mailto:gcideron@google.com" style="font-size: 14px">gcideron@google.com</a>
+      <span class="poc-label">, </span> 
+      <a href="mailto:agostinelli@google.com" style="font-size: 14px">agostinelli@google.com</a>
     </div>
-
+    </div>
     <div class="container pt-5 mt-5 shadow p-5 mb-5 bg-dark rounded">
       <h3>Comparing Base and RL-Finetuned Models. Examples randomly sampled from human evaluations.</h3>
       <div class="container pt-1">
