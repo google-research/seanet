@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MusicDiversity</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="helper-v2.js" defer></script>
+    <style>
+      html {
+        --bg: #202124;
+        --fg: #fff;
+        --accent: #444;
+        --button-bg: #e52592;
+        --button-text: #fff;
+        --header-color: var(--fg);
+        --text-area-bg: #333;
+        --text-area-fg: #fff;
+        --fonts: system-ui, Helvetica, Arial, sans-serif;
+        font-family: var(--fonts);
+        color: var(--fg);
+        background: var(--bg);
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+      }
+
+      p, sup, th, td, h3 {
+        color: var(--text-area-fg);
+      }
+      td {
+        vertical-align: middle;
+      }
+      audio {
+        width: 25vw;
+        min-width: 220px;
+        max-width: 220px;
+      }
+      .timestamp-label {
+        color: gray;
+      }
+      table.wide-audio audio {
+        width: 50vw;
+        max-width: 50vw;
+      }
+      /* Style for normal state of the link */
+      a {
+        color: var(--button-bg);
+        font-weight: bold; /* Makes the link text bold */
+        text-decoration: none; /* Removes the underline */
+      }
+
+      /* Style for when the mouse hovers over the link */
+      a:hover {
+        color: grey;
+        text-decoration: underline; /* Adds underline on hover */
+      }
+
+      .title {
+        font-weight: bold;
+        font-size: 28px;
+        border-bottom: none;
+        margin-top: 20px;
+        color: var(--header-color);
+        height: var(--header-height);
+      }
+
+      .pagination > li > a {
+        background-color: white;
+        color: #5A4181;
+      }
+      .pagination > li > a:focus,
+      .pagination > li > a:hover,
+      .pagination > li > span:focus,
+      .pagination > li > span:hover {
+        color: #5a5a5a;
+        background-color: #eee;
+        border-color: #ddd;
+      }
+      .pagination > .active > a {
+        color: white;
+        background-color: var(--button-bg) !Important;
+        border: solid 1px var(--button-bg) !Important;
+      }
+      .pagination > .active > a:hover {
+        background-color: var(--button-bg) !Important;
+        border: solid 1px var(--button-bg);
+      }
+      .poc-label {
+        color: white;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid pt-5 mt-5 shadow p-5 mb-5 bg-dark rounded">
+      <div class="text-center title">
+        <h1>Diversity-Rewarded CFG Distillation</h1>
+        <br>
+      </div>
+      <p class="text-center mb-0">
+      <a href="">Paper</a>
+      </p>
+      <br>
+      <p align="justify">
+        <b>Abstract</b> Generative models are transforming creative domains such as music generation, with inference-time strategies like Classifier-Free Guidance (CFG) playing a crucial role. However, CFG doubles inference cost while limiting originality and diversity across generated contents. In this paper, we introduce diversity-rewarded CFG distillation, a novel finetuning procedure that distills the strengths of CFG while addressing its limitations. Our approach optimises two training objectives: (1) a distillation objective, encouraging the model alone (without CFG) to imitate the CFG-augmented predictions, and (2) an RL objective with a diversity reward, promoting the generation of diverse outputs for a given prompt. By finetuning, we learn model weights with the ability to generate high-quality and diverse outputs, without any inference overhead. This also unlocks the potential of weight-based model merging strategies: by interpolating between the weights of two models (the first focusing on quality, the second on diversity), we can control the quality-diversity trade-off at deployment time, and even further boost performance. We conduct extensive experiments on the MusicLM text-to-music generative model, where our approach surpasses CFG in terms of quality-diversity Pareto optimality. According to human evaluators, our finetuned-then-merged model generates samples with higher quality-diversity than the base model augmented with CFG.
+      </p>
+    </div>
+
+    <p class="text-center fst-italic mb-0">
+      Geoffrey Cideron, Andrea Agostinelli, Johan Ferret, Sertan Girgin, Romuald Elie, Olivier Bachem, Sarah Perrin<sup><a href="#contribution">*</a></sup> and Alexandre Ramé<sup><a href="#contribution">*</a></sup>
+    </p>
+    <br>
+    <p class="text-center mb-0">
+      Google DeepMind
+    </p>
+    <p id="contribution" style="font-size: 12px"><a href="#contribution">*</a> equal advisory contribution</p>
+    <div class="poc-info">
+    <span class="poc-label">Corresponding author:</span>
+    <a href="mailto:gcideron@google.com" style="font-size: 12px">gcideron@google.com</a>
+    </div>
+
+    <div class="container-fluid pt-5 mt-5 shadow p-5 mb-5 bg-dark rounded">
+      <h3>Comparing the diversity of generations across different models. Examples sampled from human evaluations.</h3>
+      <div class="container pt-1">
+        <div class="table-responsive pt-1">
+          <table
+            class="table pt-1"
+            id="comparison-random"
+          >
+            <thead>
+              <tr>
+                <th>Caption</th>
+                <th style="text-align: center">BASE</th>
+                <th style="text-align: center">CFG</th>
+                <th style="text-align: center">BETA 0</th>
+                <th style="text-align: center">BETA 15</th>
+                <th style="text-align: center">LERP 50/50</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <ul class="pagination justify-content-center">
+            <li class="page-item active">
+              <a id="comparison-random-1" class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+              <a id="comparison-random-2" class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item">
+              <a id="comparison-random-3" class="page-link" href="#">3</a>
+            </li>
+            <li class="page-item">
+              <a id="comparison-random-4" class="page-link" href="#">4</a>
+            </li>
+            <li class="page-item">
+              <a id="comparison-random-5" class="page-link" href="#">5</a>
+            </li>
+            <li class="page-item">
+              <a id="comparison-random-6" class="page-link" href="#">6</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
