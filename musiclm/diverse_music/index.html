@@ -120,14 +120,28 @@
     <p class="text-center mb-0">
       Google DeepMind
     </p>
-    <p id="contribution" style="font-size: 12px"><a href="#contribution">*</a> equal advisory contribution</p>
+    <br>
+    <p id="contribution" style="font-size: 12px" class="text-center"><a href="#contribution">*</a> Equal advisory contribution</p>
     <div class="poc-info">
+    <p class="text-center">
     <span class="poc-label">Corresponding author:</span>
     <a href="mailto:gcideron@google.com" style="font-size: 12px">gcideron@google.com</a>
+    </p>
     </div>
 
     <div class="container-fluid pt-5 mt-5 shadow p-5 mb-5 bg-dark rounded">
       <h3>Comparing the diversity of generations across different models. Examples sampled from human evaluations.</h3>
+
+    <fieldset>
+      <ul style="color: white; list-style: none; padding: 0;">
+        <li><b>BASE:</b> MusicLM</li>
+        <li><b>CFG:</b> Base + CFG at inference time</li>
+        <li><b>BETA 0:</b> CFG-distilled focused on quality</li>
+        <li><b>BETA 15:</b> CFG-distilled + diversity reward</li>
+        <li><b>LERP 50/50:</b> Our best model, trading-off quality and diversity</li>
+      </ul>
+    </fieldset>
+
       <div class="container pt-1">
         <div class="table-responsive pt-1">
           <table
