@@ -105,11 +105,11 @@
         <br>
       </div>
       <p class="text-center mb-0">
-      <a href="">Paper</a>
+      <a href="https://arxiv.org/abs/2410.06084">Paper</a>
       </p>
       <br>
       <p align="justify">
-        <b>Abstract</b> Generative models are transforming creative domains such as music generation, with inference-time strategies like Classifier-Free Guidance (CFG) playing a crucial role. However, CFG doubles inference cost while limiting originality and diversity across generated contents. In this paper, we introduce diversity-rewarded CFG distillation, a novel finetuning procedure that distills the strengths of CFG while addressing its limitations. Our approach optimises two training objectives: (1) a distillation objective, encouraging the model alone (without CFG) to imitate the CFG-augmented predictions, and (2) an RL objective with a diversity reward, promoting the generation of diverse outputs for a given prompt. By finetuning, we learn model weights with the ability to generate high-quality and diverse outputs, without any inference overhead. This also unlocks the potential of weight-based model merging strategies: by interpolating between the weights of two models (the first focusing on quality, the second on diversity), we can control the quality-diversity trade-off at deployment time, and even further boost performance. We conduct extensive experiments on the MusicLM text-to-music generative model, where our approach surpasses CFG in terms of quality-diversity Pareto optimality. According to human evaluators, our finetuned-then-merged model generates samples with higher quality-diversity than the base model augmented with CFG.
+        <b>Abstract</b> Generative models are transforming creative domains such as music generation, with inference-time strategies like Classifier-Free Guidance (CFG) playing a crucial role. However, CFG doubles inference cost while limiting originality and diversity across generated contents. In this paper, we introduce diversity-rewarded CFG distillation, a novel finetuning procedure that distills the strengths of CFG while addressing its limitations. Our approach optimises two training objectives: (1) a distillation objective, encouraging the model alone (without CFG) to imitate the CFG-augmented predictions, and (2) an RL objective with a diversity reward, promoting the generation of diverse outputs for a given prompt. By finetuning, we learn model weights with the ability to generate high-quality and diverse outputs, without any inference overhead. This also unlocks the potential of weight-based model merging strategies: by interpolating between the weights of two models (the first focusing on quality, the second on diversity), we can control the quality-diversity trade-off at deployment time, and even further boost performance. We conduct extensive experiments on the MusicLM <a href="https://arxiv.org/abs/2301.11325">(Agostinelli et al., 2023) </a> text-to-music generative model, where our approach surpasses CFG in terms of quality-diversity Pareto optimality. According to human evaluators, our finetuned-then-merged model generates samples with higher quality-diversity than the base model augmented with CFG.
       </p>
     </div>
 
@@ -130,15 +130,15 @@
     </div>
 
     <div class="container-fluid pt-5 mt-5 shadow p-5 mb-5 bg-dark rounded">
-      <h3>Comparing the diversity of generations across different models. Examples sampled from human evaluations.</h3>
+      <h3>Comparing the diversity of generations across different models.</h3>
 
     <fieldset>
       <ul style="color: white; list-style: none; padding: 0;">
-        <li><b>BASE:</b> MusicLM</li>
-        <li><b>CFG:</b> Base + CFG at inference time</li>
-        <li><b>BETA 0:</b> CFG-distilled focused on quality</li>
-        <li><b>BETA 15:</b> CFG-distilled + diversity reward</li>
-        <li><b>LERP 50/50:</b> Our best model, trading-off quality and diversity</li>
+        <li><b>BASE:</b> MusicRL-R, a RL finetuned checkpoint of MusicLM <a href="https://arxiv.org/abs/2402.04229">(Cideron et al., 2024) </a></li>
+        <li><b>CFG:</b> Base + CFG at inference time, provides quality improvement at the expense of diversity and inference cost</li>
+        <li><b>BETA 0:</b> CFG-distilled with a focus on quality, provides same quality as applying CFG at inference time, without additional inference cost</li>
+        <li><b>BETA 15:</b> CFG-distilled + diversity reward, provides more diversity than applying CFG at inference time</li>
+        <li><b>LERP 50/50:</b> Our best model, achieving the quality of applying CFG at inference time, while also offering greater diversity and lower running costs</li>
       </ul>
     </fieldset>
 
